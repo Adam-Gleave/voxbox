@@ -1,4 +1,5 @@
 #include "renderer.h"
+using namespace std;
 using namespace glm;
 
 //Vertices to draw
@@ -6,15 +7,15 @@ using namespace glm;
 GLfloat _verts[] = {
 	//front
 	-0.5f, -0.5f, 0.5f,		1.0f, 0.0f, 0.0f, //bottom left
-	-0.5f, 0.5f, 0.5f,		1.0f, 0.0f, 0.0f, //top left
-	0.5f, -0.5f, 0.5f,		1.0f, 0.0f, 0.0f, //bottom right
+	-0.5f, 0.5f, 0.5f,		1.0f, 0.5f, 0.0f, //top left
+	0.5f, -0.5f, 0.5f,		1.0f, 0.5f, 0.0f, //bottom right
 	0.5f, 0.5f, 0.5f,		1.0f, 0.0f, 0.0f, //top right
 
 	//back
-	-0.5f, -0.5f, -0.5f,	1.0f, 0.0f, 0.0f, //bottom left
+	-0.5f, -0.5f, -0.5f,	1.0f, 0.5f, 0.0f, //bottom left
 	-0.5f, 0.5f, -0.5f,		1.0f, 0.0f, 0.0f, //top left
 	0.5f, -0.5f, -0.5f,		1.0f, 0.0f, 0.0f, //bottom right
-	0.5f, 0.5f, -0.5f,		1.0f, 0.0f, 0.0f  //top right
+	0.5f, 0.5f, -0.5f,		1.0f, 0.5f, 0.0f  //top right
 };
 
 //Elements for EBO
@@ -56,15 +57,36 @@ Renderer::~Renderer()
 
 void Renderer::render()
 {
-	//Clear background to black
-	glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
-	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	vec3 translations[512];
+	int index = 0;
 
-	//Render
-	glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_INT, 0);
+	for (int x = -4; x < 4; ++x)
+	{
+		for (int y = -4; y < 4; ++y)
+		{
+			for (int z = -4; z < 4; ++z)
+			{
+				vec3 translation;
+				translation.x = x;
+				translation.y = y;
+				translation.z = z;
+				translations[index++] = translation;
+			}
+		}
+	}
 
-	//Render
-	glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_INT, 0);
+	for (int i = 0; i < 512; i++) 
+	{
+		stringstream ss;
+		string indexstr;
+		ss << i;
+		indexstr = ss.str();
+
+		GLint offsetsUniform = glGetUniformLocation(_shaderProgram, ("offsets[" + indexstr + "]").c_str());
+		glUniform3fv(offsetsUniform, 1, value_ptr(translations[i]));
+	}
+
+	glDrawElementsInstanced(GL_TRIANGLES, 36, GL_UNSIGNED_INT, 0, 512);
 
 	//Update buffers and register any events
 	glfwSwapBuffers(_window);
@@ -107,11 +129,11 @@ void Renderer::initShaders()
 	GLint modelUniform = glGetUniformLocation(_shaderProgram, "model");
 	glUniformMatrix4fv(modelUniform, 1, GL_FALSE, value_ptr(model));
 
-	mat4 view = lookAt(vec3(3, 3, 3), vec3(0, 0, 0), vec3(0, 1, 0));;
+	mat4 view = lookAt(vec3(12, 12, 12), vec3(0, 0, 0), vec3(0, 1, 0));;
 	GLint viewUniform = glGetUniformLocation(_shaderProgram, "view");
 	glUniformMatrix4fv(viewUniform, 1, GL_FALSE, value_ptr(view));
 
-	mat4 proj = perspective(radians(45.0f), 800.0f / 600.0f, 0.1f, 10.0f);
+	mat4 proj = perspective(radians(45.0f), 800.0f / 600.0f, 0.1f, 100.0f);
 	GLint projUniform = glGetUniformLocation(_shaderProgram, "proj");
 	glUniformMatrix4fv(projUniform, 1, GL_FALSE, value_ptr(proj));
 }
@@ -124,9 +146,8 @@ void Renderer::createArrays()
 	glBindVertexArray(vao);
 
 	//Create vertex buffer and populate with vertices
-	GLuint vbo;
-	glGenBuffers(1, &vbo);
-	glBindBuffer(GL_ARRAY_BUFFER, vbo); //Make buffer active object
+	glGenBuffers(1, &_vbo);
+	glBindBuffer(GL_ARRAY_BUFFER, _vbo); //Make buffer active object
 	glBufferData(GL_ARRAY_BUFFER, sizeof(_verts), _verts, GL_STATIC_DRAW);
 
 	//Create element buffer and populate with indices

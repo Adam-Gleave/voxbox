@@ -5,6 +5,8 @@
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
+#include <string>
+#include <sstream>
 #include "shaders.h"
 
 class Renderer
@@ -20,5 +22,6 @@ public:
 private:
 	GLFWwindow *_window;
 	GLuint _shaderProgram;
+	GLuint _vbo;
 };
 

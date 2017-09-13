@@ -38,6 +38,10 @@ int main()
 	//Render scene, exit on escape key press
 	while (!glfwWindowShouldClose(window)) 
 	{
+		//Clear background to black
+		glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
 		renderer->render();
 
 		if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)

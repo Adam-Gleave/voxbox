@@ -13,12 +13,15 @@ public:
 			uniform mat4 view;
 			uniform mat4 proj;
 
+			uniform vec3 offsets[512];
+
 			out vec3 Color;
 
 			void main()
 			{
+				vec3 offset = offsets[gl_InstanceID];
 				Color = color;
-				gl_Position = proj * view * model * vec4(coord3d, 1.0);
+				gl_Position = proj * view * model * vec4((coord3d + offset), 1.0);
 			}
 		)glsl";
 	};
