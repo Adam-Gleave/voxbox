@@ -9,6 +9,7 @@ public:
 			in vec3 coord3d;
 			in vec3 color;
 
+			uniform mat4 model;
 			uniform mat4 view;
 			uniform mat4 proj;
 
@@ -17,7 +18,7 @@ public:
 			void main()
 			{
 				Color = color;
-				gl_Position = proj * view * vec4(coord3d, 1.0);
+				gl_Position = proj * view * model * vec4(coord3d, 1.0);
 			}
 		)glsl";
 	};
