@@ -34,7 +34,8 @@ void Chunk::setBlock(int x, int y, int z, GLbyte type) {
 
 void Chunk::update() {
 	//Create a new array to store vertex coords (4 bytes each)
-	byte3 verts[CHUNK_X * CHUNK_Y * CHUNK_Z * 36];
+	byte3 verts[CHUNK_X * CHUNK_Y * CHUNK_Z * 36 * 2];
+
 	int vertCount = 0;
 
 	_changed = false;
@@ -49,73 +50,74 @@ void Chunk::update() {
 					continue;
 				}
 
-				//Left side (looking from -z)
-				verts[vertCount++] = byte3(x, y, z);
-				verts[vertCount++] = byte3(x, y, z + 1);
-				verts[vertCount++] = byte3(x, y + 1, z);
-				verts[vertCount++] = byte3(x, y + 1, z);
-				verts[vertCount++] = byte3(x, y, z + 1);
-				verts[vertCount++] = byte3(x, y + 1, z + 1);
+				verts[vertCount++] = byte3(x + 1, y + 1, z);		verts[vertCount++] = byte3(0, 0, -1);
+				verts[vertCount++] = byte3(x + 1, y, z);			verts[vertCount++] = byte3(0, 0, -1);
+				verts[vertCount++] = byte3(x, y, z);				verts[vertCount++] = byte3(0, 0, -1);
+				verts[vertCount++] = byte3(x, y, z);				verts[vertCount++] = byte3(0, 0, -1);
+				verts[vertCount++] = byte3(x, y + 1, z);			verts[vertCount++] = byte3(0, 0, -1),
+				verts[vertCount++] = byte3(x + 1, y + 1, z);		verts[vertCount++] = byte3(0, 0, -1),
 
-				//Right side
-				verts[vertCount++] = byte3(x + 1, y, z);
-				verts[vertCount++] = byte3(x + 1, y + 1, z);
-				verts[vertCount++] = byte3(x + 1, y, z + 1);
-				verts[vertCount++] = byte3(x + 1, y, z + 1);
-				verts[vertCount++] = byte3(x + 1, y + 1, z + 1);
-				verts[vertCount++] = byte3(x + 1, y + 1, z);
+				verts[vertCount++] = byte3(x, y, z + 1);			verts[vertCount++] = byte3(0, 0, 1);
+				verts[vertCount++] = byte3(x + 1, y, z + 1);		verts[vertCount++] = byte3(0, 0, 1);
+				verts[vertCount++] = byte3(x + 1, y + 1, z + 1);	verts[vertCount++] = byte3(0, 0, 1);
+				verts[vertCount++] = byte3(x + 1, y + 1, z + 1);	verts[vertCount++] = byte3(0, 0, 1),
+				verts[vertCount++] = byte3(x, y + 1, z + 1);		verts[vertCount++] = byte3(0, 0, 1),
+				verts[vertCount++] = byte3(x, y, z + 1);			verts[vertCount++] = byte3(0, 0, 1);
 
-				//Front side
-				verts[vertCount++] = byte3(x, y, z);
-				verts[vertCount++] = byte3(x, y + 1, z);
-				verts[vertCount++] = byte3(x + 1, y, z);
-				verts[vertCount++] = byte3(x + 1, y, z);
-				verts[vertCount++] = byte3(x + 1, y + 1, z);
-				verts[vertCount++] = byte3(x, y + 1, z);
+				verts[vertCount++] = byte3(x, y + 1, z + 1);		verts[vertCount++] = byte3(-1, 0, 0);
+				verts[vertCount++] = byte3(x, y + 1, z);			verts[vertCount++] = byte3(-1, 0, 0);
+				verts[vertCount++] = byte3(x, y, z);				verts[vertCount++] = byte3(-1, 0, 0);
+				verts[vertCount++] = byte3(x, y, z);				verts[vertCount++] = byte3(-1, 0, 0);
+				verts[vertCount++] = byte3(x, y, z + 1);			verts[vertCount++] = byte3(-1, 0, 0);
+				verts[vertCount++] = byte3(x, y + 1, z + 1);		verts[vertCount++] = byte3(-1, 0, 0);
 
-				//Back side
-				verts[vertCount++] = byte3(x, y, z + 1);
-				verts[vertCount++] = byte3(x, y + 1, z + 1);
-				verts[vertCount++] = byte3(x + 1, y, z + 1);
-				verts[vertCount++] = byte3(x + 1, y, z + 1);
-				verts[vertCount++] = byte3(x + 1, y + 1, z + 1);
-				verts[vertCount++] = byte3(x, y + 1, z + 1);
+				verts[vertCount++] = byte3(x + 1, y, z);			verts[vertCount++] = byte3(1, 0, 0);
+				verts[vertCount++] = byte3(x + 1, y + 1, z);		verts[vertCount++] = byte3(1, 0, 0);
+				verts[vertCount++] = byte3(x + 1, y + 1, z + 1);	verts[vertCount++] = byte3(1, 0, 0);
+				verts[vertCount++] = byte3(x + 1, y + 1, z + 1);	verts[vertCount++] = byte3(1, 0, 0);
+				verts[vertCount++] = byte3(x + 1, y, z + 1);		verts[vertCount++] = byte3(1, 0, 0);
+				verts[vertCount++] = byte3(x + 1, y, z);			verts[vertCount++] = byte3(1, 0, 0);
 
-				//Bottom side
-				verts[vertCount++] = byte3(x, y, z);
-				verts[vertCount++] = byte3(x + 1, y, z);
-				verts[vertCount++] = byte3(x, y, z + 1);
-				verts[vertCount++] = byte3(x, y, z + 1);
-				verts[vertCount++] = byte3(x + 1, y, z + 1);
-				verts[vertCount++] = byte3(x + 1, y, z);
+				verts[vertCount++] = byte3(x, y, z);				verts[vertCount++] = byte3(0, -1, 0);
+				verts[vertCount++] = byte3(x + 1, y, z);			verts[vertCount++] = byte3(0, -1, 0);
+				verts[vertCount++] = byte3(x + 1, y, z + 1);		verts[vertCount++] = byte3(0, -1, 0);
+				verts[vertCount++] = byte3(x + 1, y, z + 1);		verts[vertCount++] = byte3(0, -1, 0);
+				verts[vertCount++] = byte3(x, y, z + 1);			verts[vertCount++] = byte3(0, -1, 0);
+				verts[vertCount++] = byte3(x, y, z);				verts[vertCount++] = byte3(0, -1, 0);
 
-				//Top side
-				verts[vertCount++] = byte3(x, y + 1, z);
-				verts[vertCount++] = byte3(x + 1, y + 1, z);
-				verts[vertCount++] = byte3(x, y + 1, z + 1);
-				verts[vertCount++] = byte3(x, y + 1, z + 1);
-				verts[vertCount++] = byte3(x + 1, y + 1, z + 1);
-				verts[vertCount++] = byte3(x + 1, y + 1, z);
+				verts[vertCount++] = byte3(x + 1, y + 1, z + 1);	verts[vertCount++] = byte3(0, 1, 0);
+				verts[vertCount++] = byte3(x + 1, y + 1, z);		verts[vertCount++] = byte3(0, 1, 0);
+				verts[vertCount++] = byte3(x, y + 1, z);			verts[vertCount++] = byte3(0, 1, 0);
+				verts[vertCount++] = byte3(x, y + 1, z);			verts[vertCount++] = byte3(0, 1, 0);
+				verts[vertCount++] = byte3(x, y + 1, z + 1);		verts[vertCount++] = byte3(0, 1, 0);
+				verts[vertCount++] = byte3(x + 1, y + 1, z + 1);	verts[vertCount++] = byte3(0, 1, 0);
 			}
 		}
 	}
 
 	_elements = vertCount;
 	glBindBuffer(1, _vbo);
-	glBufferData(GL_ARRAY_BUFFER, _elements * sizeof(*verts), verts, GL_STATIC_DRAW);
+	glBufferData(GL_ARRAY_BUFFER, _elements * 3, verts, GL_STATIC_DRAW);
 }
 
 void Chunk::render(Renderer *renderer) {
+	//Clear background to black
+	glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
 	if (_changed) {
 		update();
 	}
 
-	//glEnable(GL_CULL_FACE | GL_DEPTH_TEST);
 	glBindBuffer(1, _vbo);
 
 	GLint positionAttrib = glGetAttribLocation(renderer->_shaderProgram, "coord");
 	glEnableVertexAttribArray(positionAttrib);
-	glVertexAttribPointer(positionAttrib, 3, GL_BYTE, GL_FALSE, 0, 0);
+	glVertexAttribPointer(positionAttrib, 3, GL_BYTE, GL_FALSE, 6, 0);
 
-	glDrawArrays(GL_TRIANGLES, 0, _elements);
+	GLint normalAttrib = glGetAttribLocation(renderer->_shaderProgram, "normal");
+	glEnableVertexAttribArray(normalAttrib);
+	glVertexAttribPointer(normalAttrib, 3, GL_BYTE, GL_FALSE, 6, (void*)3);
+
+	glDrawArrays(GL_TRIANGLES, 0, (_elements / 2));
 }

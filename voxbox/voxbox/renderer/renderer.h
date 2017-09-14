@@ -17,7 +17,9 @@ public:
 	void Renderer::render();
 	void Renderer::initShaders();
 	void Renderer::createArrays();
+
 	GLuint _shaderProgram;
+	GLuint _lightProgram;
 
 private:
 	GLFWwindow *_window;

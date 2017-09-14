@@ -30,15 +30,12 @@ int main() {
 	renderer->createArrays();
 	renderer->initShaders();
 
-	glEnable(GL_CULL_FACE | GL_DEPTH_TEST);
+	glEnable(GL_DEPTH_TEST);
+	glEnable(GL_CULL_FACE);
 
 	//Main loop
 	//Render scene, exit on escape key press
 	while (!glfwWindowShouldClose(window)) {
-		//Clear background to black
-		glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
-		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
 		renderer->render();
 
 		if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS) {
