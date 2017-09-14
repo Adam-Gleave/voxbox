@@ -13,36 +13,45 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
-    <Filter Include="Header Files\shaders">
-      <UniqueIdentifier>{5c496c0e-2a59-4b97-be93-219c513c63f8}</UniqueIdentifier>
+    <Filter Include="Header Files\chunks">
+      <UniqueIdentifier>{4e114ed3-6781-49cb-b187-918528d57ffc}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Header Files\assets">
-      <UniqueIdentifier>{389e4210-01b4-4e50-85fa-848b8422e00e}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Header Files\renderer">
-      <UniqueIdentifier>{236935cf-68a3-4f14-b7f5-2a4f1d4ef525}</UniqueIdentifier>
+    <Filter Include="Source Files\chunks">
+      <UniqueIdentifier>{cae6f546-5d6e-4f35-888e-8cb767168639}</UniqueIdentifier>
     </Filter>
     <Filter Include="Source Files\renderer">
-      <UniqueIdentifier>{e1e92e95-7f23-41fd-a2dc-d39085921412}</UniqueIdentifier>
+      <UniqueIdentifier>{6df5abfc-9fcc-4ac0-b244-b970d8fb748c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\renderer">
+      <UniqueIdentifier>{5b971bb4-89a7-4aab-bbf2-36ab679eedf0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\shaders">
+      <UniqueIdentifier>{ee43f03c-ca97-4fc2-8756-8ad8cba3f715}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="renderer.cpp">
+    <ClCompile Include="chunks\chunk.cpp">
+      <Filter>Source Files\chunks</Filter>
+    </ClCompile>
+    <ClCompile Include="renderer\renderer.cpp">
       <Filter>Source Files\renderer</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="shaders.h">
-      <Filter>Header Files\shaders</Filter>
+    <ClInclude Include="chunks\block.h">
+      <Filter>Header Files\chunks</Filter>
     </ClInclude>
-    <ClInclude Include="block.h">
-      <Filter>Header Files\assets</Filter>
+    <ClInclude Include="chunks\chunk.h">
+      <Filter>Header Files\chunks</Filter>
     </ClInclude>
-    <ClInclude Include="renderer.h">
+    <ClInclude Include="renderer\renderer.h">
       <Filter>Header Files\renderer</Filter>
+    </ClInclude>
+    <ClInclude Include="shaders\shaders.h">
+      <Filter>Header Files\shaders</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

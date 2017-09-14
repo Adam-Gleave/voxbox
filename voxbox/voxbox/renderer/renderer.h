@@ -7,10 +7,9 @@
 #include <glm/gtc/type_ptr.hpp>
 #include <string>
 #include <sstream>
-#include "shaders.h"
+#include "../shaders/shaders.h"
 
-class Renderer
-{
+class Renderer {
 public:
 	Renderer(GLFWwindow *window);
 	~Renderer();
@@ -18,10 +17,10 @@ public:
 	void Renderer::render();
 	void Renderer::initShaders();
 	void Renderer::createArrays();
+	GLuint _shaderProgram;
 
 private:
 	GLFWwindow *_window;
-	GLuint _shaderProgram;
 	GLuint _vbo;
 };
 

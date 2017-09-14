@@ -154,15 +154,17 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="chunks\chunk.cpp" />
     <ClCompile Include="main.cpp">
       <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">C:\glfw-3.2.1.bin.WIN64\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
-    <ClCompile Include="renderer.cpp" />
+    <ClCompile Include="renderer\renderer.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="block.h" />
-    <ClInclude Include="renderer.h" />
-    <ClInclude Include="shaders.h" />
+    <ClInclude Include="chunks\block.h" />
+    <ClInclude Include="chunks\chunk.h" />
+    <ClInclude Include="renderer\renderer.h" />
+    <ClInclude Include="shaders\shaders.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
