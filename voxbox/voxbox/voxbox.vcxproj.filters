@@ -39,6 +39,9 @@
     <ClCompile Include="renderer\renderer.cpp">
       <Filter>Source Files\renderer</Filter>
     </ClCompile>
+    <ClCompile Include="chunks\superchunk.cpp">
+      <Filter>Source Files\chunks</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="chunks\block.h">
@@ -52,6 +55,9 @@
     </ClInclude>
     <ClInclude Include="shaders\shaders.h">
       <Filter>Header Files\shaders</Filter>
+    </ClInclude>
+    <ClInclude Include="chunks\superchunk.h">
+      <Filter>Header Files\chunks</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

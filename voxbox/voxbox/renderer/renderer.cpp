@@ -1,27 +1,16 @@
 #include <list>
-#include "../chunks/chunk.h"
+#include "../chunks/superchunk.h"
 using namespace std;
 using namespace glm;
 
-Chunk *_chunk;
 vec3 _lightPos;
+SuperChunk *_superChunk;
 
 Renderer::Renderer(GLFWwindow *window) {
 	//Set global light position
 	_lightPos = vec3(18, 50, 28);
-
-	//Temporary for testing purposes
-	//Set blocks in the chunk to type 1, so they render.
-	_chunk = new Chunk;
-
-	for (int x = 0; x < CHUNK_X; ++x) {
-		for (int y = 0; y < CHUNK_Y; ++y) {
-			for (int z = 0; z < CHUNK_Z; ++z) {
-				_chunk->setBlock(x, y, z, 1);
-			}
-		}
-	}
-
+	//Make new SuperChunk object
+	_superChunk = new SuperChunk();
 	_window = window;
 }
 
@@ -30,7 +19,7 @@ Renderer::~Renderer() {
 }
 
 void Renderer::render() {
-	_chunk->render(this);
+	_superChunk->render(this);
 
 	//Update buffers and register any events
 	glfwSwapBuffers(_window);
@@ -58,11 +47,6 @@ void Renderer::initShaders() {
 	glLinkProgram(_shaderProgram);
 	glUseProgram(_shaderProgram);
 
-	//Get pointers to attributes
-	GLint positionAttrib = glGetAttribLocation(_shaderProgram, "coord");
-	glEnableVertexAttribArray(positionAttrib);
-	glVertexAttribPointer(positionAttrib, 3, GL_BYTE, GL_FALSE, 0, 0);
-
 	mat4 model = mat4(1.0f);
 	GLint modelUniform = glGetUniformLocation(_shaderProgram, "model");
 	glUniformMatrix4fv(modelUniform, 1, GL_FALSE, value_ptr(model));
@@ -84,12 +68,7 @@ void Renderer::initShaders() {
 }
 
 void Renderer::createArrays() {
-	//Create vertex array
-	GLuint vao;
-	glGenVertexArrays(1, &vao);
-	glBindVertexArray(vao);
-
-	//Create vertex buffer and populate with vertices
+	//Create vertex buffer
 	glGenBuffers(1, &_vbo);
 	glBindBuffer(GL_ARRAY_BUFFER, _vbo); //Make buffer active object
 }

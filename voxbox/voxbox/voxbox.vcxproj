@@ -155,6 +155,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="chunks\chunk.cpp" />
+    <ClCompile Include="chunks\superchunk.cpp" />
     <ClCompile Include="main.cpp">
       <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">C:\glfw-3.2.1.bin.WIN64\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
@@ -163,6 +164,7 @@
   <ItemGroup>
     <ClInclude Include="chunks\block.h" />
     <ClInclude Include="chunks\chunk.h" />
+    <ClInclude Include="chunks\superchunk.h" />
     <ClInclude Include="renderer\renderer.h" />
     <ClInclude Include="shaders\shaders.h" />
   </ItemGroup>

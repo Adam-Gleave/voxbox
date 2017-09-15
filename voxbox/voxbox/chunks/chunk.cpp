@@ -3,9 +3,7 @@
 #include "chunk.h"
 using namespace glm;
 
-typedef tvec3<GLbyte> byte3;
-
-Chunk::Chunk() {
+Chunk::Chunk(int xOffset, int yOffset, int zOffset) {
 	//Populate block array with default (empty) blocks
 	for (int x = 0; x < CHUNK_X; ++x) {
 		for (int y = 0; y < CHUNK_Y; ++y) {
@@ -15,13 +13,25 @@ Chunk::Chunk() {
 		}
 	}
 
+	_offset[0] = xOffset;
+	_offset[1] = yOffset;
+	_offset[2] = zOffset;
 	_elements = 0;
 	_changed = true;
-	glGenBuffers(1, &_vbo);
 }
 
 Chunk::~Chunk() {
 	glDeleteBuffers(1, &_vbo);
+}
+
+void Chunk::render(Renderer *renderer) {
+	if (_changed) {
+		updateMesh();
+		updateBuffers(renderer);
+	}
+
+	glBindVertexArray(_vao);
+	glDrawArrays(GL_TRIANGLES, 0, (_elements / 2));
 }
 
 GLbyte Chunk::getBlock(int x, int y, int z) {
@@ -29,26 +39,28 @@ GLbyte Chunk::getBlock(int x, int y, int z) {
 }
 
 void Chunk::setBlock(int x, int y, int z, GLbyte type) {
+	_changed = true;
 	_blocks[x][y][z].setType(type);
 }
 
-void Chunk::update() {
-	//Create a new array to store vertex coords (4 bytes each)
-	byte3 verts[CHUNK_X * CHUNK_Y * CHUNK_Z * 36 * 2];
-
+void Chunk::updateMesh() {
 	int vertCount = 0;
 
 	_changed = false;
 
-	for (int x = 0; x < CHUNK_X; ++x) {
-		for (int y = 0; y < CHUNK_Y; ++y) {
-			for (int z = 0; z < CHUNK_Z; ++z) {
-				GLbyte type = _blocks[x][y][z].getType();
+	for (int i = 0; i < CHUNK_X; ++i) {
+		for (int j = 0; j < CHUNK_Y; ++j) {
+			for (int k = 0; k < CHUNK_Z; ++k) {
+				GLbyte type = _blocks[i][j][k].getType();
 
 				//Don't add vertices of empty (default) blocks
 				if (type == 0) {
 					continue;
 				}
+
+				int x = i + _offset[0];
+				int y = j + _offset[1];
+				int z = k + _offset[2];
 
 				verts[vertCount++] = byte3(x + 1, y + 1, z);		verts[vertCount++] = byte3(0, 0, -1);
 				verts[vertCount++] = byte3(x + 1, y, z);			verts[vertCount++] = byte3(0, 0, -1);
@@ -96,20 +108,16 @@ void Chunk::update() {
 	}
 
 	_elements = vertCount;
-	glBindBuffer(1, _vbo);
-	glBufferData(GL_ARRAY_BUFFER, _elements * 3, verts, GL_STATIC_DRAW);
 }
 
-void Chunk::render(Renderer *renderer) {
-	//Clear background to black
-	glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
-	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+void Chunk::updateBuffers(Renderer *renderer) {
+	glGenBuffers(1, &_vbo);
+	glBindBuffer(GL_ARRAY_BUFFER, _vbo);
 
-	if (_changed) {
-		update();
-	}
+	glGenVertexArrays(1, &_vao);
+	glBindVertexArray(_vao);
 
-	glBindBuffer(1, _vbo);
+	glBufferData(GL_ARRAY_BUFFER, _elements * 3, verts, GL_STATIC_DRAW);
 
 	GLint positionAttrib = glGetAttribLocation(renderer->_shaderProgram, "coord");
 	glEnableVertexAttribArray(positionAttrib);
@@ -118,6 +126,4 @@ void Chunk::render(Renderer *renderer) {
 	GLint normalAttrib = glGetAttribLocation(renderer->_shaderProgram, "normal");
 	glEnableVertexAttribArray(normalAttrib);
 	glVertexAttribPointer(normalAttrib, 3, GL_BYTE, GL_FALSE, 6, (void*)3);
-
-	glDrawArrays(GL_TRIANGLES, 0, (_elements / 2));
 }

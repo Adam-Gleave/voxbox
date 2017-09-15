@@ -40,7 +40,7 @@ public:
 
 			void main() {
 				//Base brown color for testing
-				vec3 objectColor = vec3(1.0, 0.5, 0.31);
+				vec3 objectColor = vec3(0.8, 0.35, 0.21);
 				
 				//Ambient lighting
 				float ambientStrength = 0.1;
