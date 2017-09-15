@@ -42,6 +42,9 @@
     <ClCompile Include="chunks\superchunk.cpp">
       <Filter>Source Files\chunks</Filter>
     </ClCompile>
+    <ClCompile Include="renderer\camera.cpp">
+      <Filter>Source Files\renderer</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="chunks\block.h">
@@ -58,6 +61,9 @@
     </ClInclude>
     <ClInclude Include="chunks\superchunk.h">
       <Filter>Header Files\chunks</Filter>
+    </ClInclude>
+    <ClInclude Include="renderer\camera.h">
+      <Filter>Header Files\renderer</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

@@ -47,18 +47,6 @@ void Renderer::initShaders() {
 	glLinkProgram(_shaderProgram);
 	glUseProgram(_shaderProgram);
 
-	mat4 model = mat4(1.0f);
-	GLint modelUniform = glGetUniformLocation(_shaderProgram, "model");
-	glUniformMatrix4fv(modelUniform, 1, GL_FALSE, value_ptr(model));
-
-	mat4 view = lookAt(vec3(36, 36, 36), vec3(0, 0, 0), vec3(0, 1, 0));;
-	GLint viewUniform = glGetUniformLocation(_shaderProgram, "view");
-	glUniformMatrix4fv(viewUniform, 1, GL_FALSE, value_ptr(view));
-
-	mat4 proj = perspective(radians(45.0f), 800.0f / 600.0f, 1.0f, 80.0f);
-	GLint projUniform = glGetUniformLocation(_shaderProgram, "proj");
-	glUniformMatrix4fv(projUniform, 1, GL_FALSE, value_ptr(proj));
-
 	vec3 lightColor = vec3(1.0, 1.0, 1.0);
 	GLint lightUniform = glGetUniformLocation(_shaderProgram, "lightColor");
 	glUniform3fv(lightUniform, 1, value_ptr(lightColor));
