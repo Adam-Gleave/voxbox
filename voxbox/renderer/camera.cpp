@@ -8,8 +8,8 @@ Camera::Camera(GLint modelLoc, GLint viewLoc, GLint projLoc) {
 	_projLoc = projLoc;
 
 	_mouseSpeed = 0.05f;
-	_speed = 10.0f;
-	_position = vec3(40, 80, 40);
+	_speed = 25.0f;
+	_position = vec3(64, 80, 64);
 	_horizontalAngle = 3.14f;
 	_verticalAngle = 0.0f;
 
@@ -19,7 +19,7 @@ Camera::Camera(GLint modelLoc, GLint viewLoc, GLint projLoc) {
 	mat4 view = lookAt(vec3(_position), vec3(0, 0, 0), vec3(0, 1, 0));;
 	glUniformMatrix4fv(_viewLoc, 1, GL_FALSE, value_ptr(view));
 
-	mat4 proj = perspective(radians(45.0f), 1024.0f / 768.0f, 1.0f, 200.0f);
+	mat4 proj = perspective(radians(70.0f), 1280.0f / 720.0f, 1.0f, 400.0f);
 	glUniformMatrix4fv(_projLoc, 1, GL_FALSE, value_ptr(proj));
 }
 
@@ -29,8 +29,8 @@ void Camera::updateAngle(double x, double y, float deltaTime) {
 	int xPos = floor(x);
 	int yPos = floor(y);
 
-	_horizontalAngle += _mouseSpeed * deltaTime * float(1024 / 2 - xPos);
-	_verticalAngle += _mouseSpeed * deltaTime * float(768 / 2 - yPos);
+	_horizontalAngle += _mouseSpeed * deltaTime * float(1280 / 2 - xPos);
+	_verticalAngle += _mouseSpeed * deltaTime * float(720 / 2 - yPos);
 
 	_direction = vec3(cos(_verticalAngle) * sin(_horizontalAngle),
 		sin(_verticalAngle),

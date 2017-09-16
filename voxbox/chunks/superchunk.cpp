@@ -1,6 +1,12 @@
 #include "superchunk.h"
 
 SuperChunk::SuperChunk() {
+	_noise.SetNoiseType(FastNoise::SimplexFractal);
+	_noise.SetSeed(908237);
+	_noise.SetFractalType(FastNoise::RigidMulti);
+	_noise.SetFrequency(0.003);
+	_noise.SetFractalOctaves(5);
+
 	for (int i = 0; i < CHUNKS_WORLD_X; ++i) {
 		for (int j = 0; j < CHUNKS_WORLD_Y; ++j) {
 			for (int k = 0; k < CHUNKS_WORLD_Z; ++k) {
@@ -11,8 +17,8 @@ SuperChunk::SuperChunk() {
 
 				//Populate array with chunks
 				_chunks[i][j][k] = new Chunk(x, y, z);
-				//Temp function: Fill chunk with blocks
-				populateChunk(_chunks[i][j][k]);
+
+				populateChunk(_chunks[i][j][k], x, y, z);
 			}
 		}
 	}
@@ -39,13 +45,26 @@ void SuperChunk::render(Renderer *renderer) {
 	}
 }
 
-void SuperChunk::populateChunk(Chunk *chunk) {
+void SuperChunk::populateChunk(Chunk *chunk, int xOff, int yOff, int zOff) {
 	for (int x = 0; x < CHUNK_X; ++x) {
-		for (int y = 0; y < CHUNK_Y; ++y) {
 			for (int z = 0; z < CHUNK_Z; ++z) {
-				//Temporary -- set all blocks to render (type 1)
-				chunk->setBlock(x, y, z, 1);
-			}
+				//Retrieve a coordinate-based height value using simplex noise
+				int xcoord = x + xOff;
+				int zcoord = z + zOff;
+				float height = _noise.GetNoise(xcoord, zcoord);
+				
+				//Work out y height of blocks in x/z coordinate
+				int blocksVertical = WORLD_HEIGHT_CENTER + floor(height * CHUNK_Y);
+
+				//Set blocks under height range as active
+				for (int y = 0; y < CHUNK_Y; ++y) {
+					if (y < blocksVertical - yOff) {
+						chunk->setBlock(x, y, z, 1);
+					}
+					else {
+						chunk->setBlock(x, y, z, 0);
+					}
+				}
 		}
 	}
 }

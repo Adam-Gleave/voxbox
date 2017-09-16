@@ -6,6 +6,8 @@
 #define CHUNKS_WORLD_Y 2
 #define CHUNKS_WORLD_Z 8
 
+#define WORLD_HEIGHT_CENTER ((CHUNKS_WORLD_Y * CHUNK_Y) / 2)
+
 #include <glm/gtc/matrix_transform.hpp>
 #include "block.h"
 #include "../renderer/renderer.h"

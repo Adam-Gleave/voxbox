@@ -8,7 +8,7 @@ SuperChunk *_superChunk;
 
 Renderer::Renderer(GLFWwindow *window) {
 	//Set global light position
-	_lightPos = vec3(18, 150, 28);
+	_lightPos = vec3(128, 150, 128);
 	//Make new SuperChunk object
 	_superChunk = new SuperChunk();
 	_window = window;

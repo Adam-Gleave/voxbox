@@ -10,7 +10,7 @@ GLFWwindow *initWindow() {
 
 	//Create resizable GLFW window
 	glfwWindowHint(GLFW_RESIZABLE, GL_FALSE);
-	GLFWwindow* window = glfwCreateWindow(1024, 768, "OpenGL", nullptr, nullptr);
+	GLFWwindow* window = glfwCreateWindow(1280, 720, "VoxBox", nullptr, nullptr);
 
 	return window;
 }
@@ -53,7 +53,7 @@ int main() {
 		//Get co-ordinates of camera;
 		double xPos, yPos;
 		glfwGetCursorPos(window, &xPos, &yPos);
-		glfwSetCursorPos(window, 1024 / 2, 768 / 2);
+		glfwSetCursorPos(window, 1280 / 2, 720 / 2);
 		camera->updateAngle(xPos, yPos, deltaTime);
 
 		//Clear background to black

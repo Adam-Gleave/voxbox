@@ -154,6 +154,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="..\..\..\..\..\..\..\..\FastNoise-master\FastNoise.cpp" />
     <ClCompile Include="chunks\chunk.cpp" />
     <ClCompile Include="chunks\superchunk.cpp" />
     <ClCompile Include="main.cpp">
@@ -163,6 +164,7 @@
     <ClCompile Include="renderer\renderer.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\..\..\..\..\..\..\..\FastNoise-master\FastNoise.h" />
     <ClInclude Include="chunks\block.h" />
     <ClInclude Include="chunks\chunk.h" />
     <ClInclude Include="chunks\superchunk.h" />
