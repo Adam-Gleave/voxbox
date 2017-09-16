@@ -1,7 +1,12 @@
-#define CHUNK_X 16
-#define CHUNK_Y 16
-#define CHUNK_Z 16
+#define CHUNK_X 32
+#define CHUNK_Y 32
+#define CHUNK_Z 32
 
+#define CHUNKS_WORLD_X 8
+#define CHUNKS_WORLD_Y 2
+#define CHUNKS_WORLD_Z 8
+
+#include <glm/gtc/matrix_transform.hpp>
 #include "block.h"
 #include "../renderer/renderer.h"
 

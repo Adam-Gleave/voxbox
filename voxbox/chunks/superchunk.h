@@ -1,7 +1,3 @@
-#define CHUNKS_WORLD_X 2
-#define CHUNKS_WORLD_Y 1
-#define CHUNKS_WORLD_Z 2
-
 #include "chunk.h"
 
 class SuperChunk {

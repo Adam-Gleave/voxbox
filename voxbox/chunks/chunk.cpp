@@ -30,6 +30,10 @@ void Chunk::render(Renderer *renderer) {
 		updateBuffers(renderer);
 	}
 
+	GLint modelUniform = glGetUniformLocation(renderer->_shaderProgram, "model");
+	mat4 model = translate(mat4(1.0), vec3(_offset[0], _offset[1], _offset[2]));
+	glUniformMatrix4fv(modelUniform, 1, GL_FALSE, value_ptr(model));
+
 	glBindVertexArray(_vao);
 	glDrawArrays(GL_TRIANGLES, 0, (_elements / 2));
 }
@@ -48,61 +52,70 @@ void Chunk::updateMesh() {
 
 	_changed = false;
 
-	for (int i = 0; i < CHUNK_X; ++i) {
-		for (int j = 0; j < CHUNK_Y; ++j) {
-			for (int k = 0; k < CHUNK_Z; ++k) {
-				GLbyte type = _blocks[i][j][k].getType();
+	for (int x = 0; x < CHUNK_X; ++x) {
+		for (int y = 0; y < CHUNK_Y; ++y) {
+			for (int z = 0; z < CHUNK_Z; ++z) {
+				GLbyte type = _blocks[x][y][z].getType();
 
 				//Don't add vertices of empty (default) blocks
 				if (type == 0) {
 					continue;
 				}
 
-				int x = i + _offset[0];
-				int y = j + _offset[1];
-				int z = k + _offset[2];
+				//Cull faces that are occluded by other blocks
+				if (z == 0 || _blocks[x][y][z - 1].getType() == 0) {
+					verts[vertCount++] = byte3(x + 1, y + 1, z);		verts[vertCount++] = byte3(0, 0, -1);
+					verts[vertCount++] = byte3(x + 1, y, z);			verts[vertCount++] = byte3(0, 0, -1);
+					verts[vertCount++] = byte3(x, y, z);				verts[vertCount++] = byte3(0, 0, -1);
+					verts[vertCount++] = byte3(x, y, z);				verts[vertCount++] = byte3(0, 0, -1);
+					verts[vertCount++] = byte3(x, y + 1, z);			verts[vertCount++] = byte3(0, 0, -1);
+					verts[vertCount++] = byte3(x + 1, y + 1, z);		verts[vertCount++] = byte3(0, 0, -1);
+				}
 
-				verts[vertCount++] = byte3(x + 1, y + 1, z);		verts[vertCount++] = byte3(0, 0, -1);
-				verts[vertCount++] = byte3(x + 1, y, z);			verts[vertCount++] = byte3(0, 0, -1);
-				verts[vertCount++] = byte3(x, y, z);				verts[vertCount++] = byte3(0, 0, -1);
-				verts[vertCount++] = byte3(x, y, z);				verts[vertCount++] = byte3(0, 0, -1);
-				verts[vertCount++] = byte3(x, y + 1, z);			verts[vertCount++] = byte3(0, 0, -1),
-				verts[vertCount++] = byte3(x + 1, y + 1, z);		verts[vertCount++] = byte3(0, 0, -1),
+				if (z == CHUNK_Z - 1 || _blocks[x][y][z + 1].getType() == 0) {
+					verts[vertCount++] = byte3(x, y, z + 1);			verts[vertCount++] = byte3(0, 0, 1);
+					verts[vertCount++] = byte3(x + 1, y, z + 1);		verts[vertCount++] = byte3(0, 0, 1);
+					verts[vertCount++] = byte3(x + 1, y + 1, z + 1);	verts[vertCount++] = byte3(0, 0, 1);
+					verts[vertCount++] = byte3(x + 1, y + 1, z + 1);	verts[vertCount++] = byte3(0, 0, 1);
+					verts[vertCount++] = byte3(x, y + 1, z + 1);		verts[vertCount++] = byte3(0, 0, 1);
+					verts[vertCount++] = byte3(x, y, z + 1);			verts[vertCount++] = byte3(0, 0, 1);
+				}
 
-				verts[vertCount++] = byte3(x, y, z + 1);			verts[vertCount++] = byte3(0, 0, 1);
-				verts[vertCount++] = byte3(x + 1, y, z + 1);		verts[vertCount++] = byte3(0, 0, 1);
-				verts[vertCount++] = byte3(x + 1, y + 1, z + 1);	verts[vertCount++] = byte3(0, 0, 1);
-				verts[vertCount++] = byte3(x + 1, y + 1, z + 1);	verts[vertCount++] = byte3(0, 0, 1),
-				verts[vertCount++] = byte3(x, y + 1, z + 1);		verts[vertCount++] = byte3(0, 0, 1),
-				verts[vertCount++] = byte3(x, y, z + 1);			verts[vertCount++] = byte3(0, 0, 1);
+				if (x == 0 || _blocks[x - 1][y][z].getType() == 0) {
+					verts[vertCount++] = byte3(x, y + 1, z + 1);		verts[vertCount++] = byte3(-1, 0, 0);
+					verts[vertCount++] = byte3(x, y + 1, z);			verts[vertCount++] = byte3(-1, 0, 0);
+					verts[vertCount++] = byte3(x, y, z);				verts[vertCount++] = byte3(-1, 0, 0);
+					verts[vertCount++] = byte3(x, y, z);				verts[vertCount++] = byte3(-1, 0, 0);
+					verts[vertCount++] = byte3(x, y, z + 1);			verts[vertCount++] = byte3(-1, 0, 0);
+					verts[vertCount++] = byte3(x, y + 1, z + 1);		verts[vertCount++] = byte3(-1, 0, 0);
+				}
 
-				verts[vertCount++] = byte3(x, y + 1, z + 1);		verts[vertCount++] = byte3(-1, 0, 0);
-				verts[vertCount++] = byte3(x, y + 1, z);			verts[vertCount++] = byte3(-1, 0, 0);
-				verts[vertCount++] = byte3(x, y, z);				verts[vertCount++] = byte3(-1, 0, 0);
-				verts[vertCount++] = byte3(x, y, z);				verts[vertCount++] = byte3(-1, 0, 0);
-				verts[vertCount++] = byte3(x, y, z + 1);			verts[vertCount++] = byte3(-1, 0, 0);
-				verts[vertCount++] = byte3(x, y + 1, z + 1);		verts[vertCount++] = byte3(-1, 0, 0);
+				if (x == CHUNK_X - 1 || _blocks[x + 1][y][z].getType() == 0) {
+					verts[vertCount++] = byte3(x + 1, y, z);			verts[vertCount++] = byte3(1, 0, 0);
+					verts[vertCount++] = byte3(x + 1, y + 1, z);		verts[vertCount++] = byte3(1, 0, 0);
+					verts[vertCount++] = byte3(x + 1, y + 1, z + 1);	verts[vertCount++] = byte3(1, 0, 0);
+					verts[vertCount++] = byte3(x + 1, y + 1, z + 1);	verts[vertCount++] = byte3(1, 0, 0);
+					verts[vertCount++] = byte3(x + 1, y, z + 1);		verts[vertCount++] = byte3(1, 0, 0);
+					verts[vertCount++] = byte3(x + 1, y, z);			verts[vertCount++] = byte3(1, 0, 0);
+				}
 
-				verts[vertCount++] = byte3(x + 1, y, z);			verts[vertCount++] = byte3(1, 0, 0);
-				verts[vertCount++] = byte3(x + 1, y + 1, z);		verts[vertCount++] = byte3(1, 0, 0);
-				verts[vertCount++] = byte3(x + 1, y + 1, z + 1);	verts[vertCount++] = byte3(1, 0, 0);
-				verts[vertCount++] = byte3(x + 1, y + 1, z + 1);	verts[vertCount++] = byte3(1, 0, 0);
-				verts[vertCount++] = byte3(x + 1, y, z + 1);		verts[vertCount++] = byte3(1, 0, 0);
-				verts[vertCount++] = byte3(x + 1, y, z);			verts[vertCount++] = byte3(1, 0, 0);
+				if (y == 0 || _blocks[x][y - 1][z].getType() == 0) {
+					verts[vertCount++] = byte3(x, y, z);				verts[vertCount++] = byte3(0, -1, 0);
+					verts[vertCount++] = byte3(x + 1, y, z);			verts[vertCount++] = byte3(0, -1, 0);
+					verts[vertCount++] = byte3(x + 1, y, z + 1);		verts[vertCount++] = byte3(0, -1, 0);
+					verts[vertCount++] = byte3(x + 1, y, z + 1);		verts[vertCount++] = byte3(0, -1, 0);
+					verts[vertCount++] = byte3(x, y, z + 1);			verts[vertCount++] = byte3(0, -1, 0);
+					verts[vertCount++] = byte3(x, y, z);				verts[vertCount++] = byte3(0, -1, 0);
+				}
 
-				verts[vertCount++] = byte3(x, y, z);				verts[vertCount++] = byte3(0, -1, 0);
-				verts[vertCount++] = byte3(x + 1, y, z);			verts[vertCount++] = byte3(0, -1, 0);
-				verts[vertCount++] = byte3(x + 1, y, z + 1);		verts[vertCount++] = byte3(0, -1, 0);
-				verts[vertCount++] = byte3(x + 1, y, z + 1);		verts[vertCount++] = byte3(0, -1, 0);
-				verts[vertCount++] = byte3(x, y, z + 1);			verts[vertCount++] = byte3(0, -1, 0);
-				verts[vertCount++] = byte3(x, y, z);				verts[vertCount++] = byte3(0, -1, 0);
-
-				verts[vertCount++] = byte3(x + 1, y + 1, z + 1);	verts[vertCount++] = byte3(0, 1, 0);
-				verts[vertCount++] = byte3(x + 1, y + 1, z);		verts[vertCount++] = byte3(0, 1, 0);
-				verts[vertCount++] = byte3(x, y + 1, z);			verts[vertCount++] = byte3(0, 1, 0);
-				verts[vertCount++] = byte3(x, y + 1, z);			verts[vertCount++] = byte3(0, 1, 0);
-				verts[vertCount++] = byte3(x, y + 1, z + 1);		verts[vertCount++] = byte3(0, 1, 0);
-				verts[vertCount++] = byte3(x + 1, y + 1, z + 1);	verts[vertCount++] = byte3(0, 1, 0);
+				if (y == CHUNK_Y - 1 || _blocks[x][y + 1][z].getType() == 0) {
+					verts[vertCount++] = byte3(x + 1, y + 1, z + 1);	verts[vertCount++] = byte3(0, 1, 0);
+					verts[vertCount++] = byte3(x + 1, y + 1, z);		verts[vertCount++] = byte3(0, 1, 0);
+					verts[vertCount++] = byte3(x, y + 1, z);			verts[vertCount++] = byte3(0, 1, 0);
+					verts[vertCount++] = byte3(x, y + 1, z);			verts[vertCount++] = byte3(0, 1, 0);
+					verts[vertCount++] = byte3(x, y + 1, z + 1);		verts[vertCount++] = byte3(0, 1, 0);
+					verts[vertCount++] = byte3(x + 1, y + 1, z + 1);	verts[vertCount++] = byte3(0, 1, 0);
+				}
 			}
 		}
 	}
