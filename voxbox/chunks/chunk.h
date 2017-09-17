@@ -13,6 +13,12 @@
 #include "../renderer/renderer.h"
 
 typedef glm::tvec3<GLbyte> byte3;
+typedef glm::tvec4<GLbyte> byte4;
+
+struct Vertex {
+	byte4 coords;
+	byte3 normals;
+};
 
 class Chunk {
 public:
@@ -26,7 +32,7 @@ public:
 	void render(Renderer *renderer);
 
 private:
-	byte3 verts[CHUNK_X * CHUNK_Y * CHUNK_Z * 36 * 2];
+	Vertex verts[CHUNK_X * CHUNK_Y * CHUNK_Z * 36];
 	Block _blocks[CHUNK_X][CHUNK_Y][CHUNK_Z];
 	GLuint _vao;
 	GLuint _vbo;

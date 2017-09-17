@@ -7,7 +7,7 @@
 class Camera
 {
 public:
-	Camera(GLint modelLoc, GLint viewLoc, GLint projLoc);
+	Camera(GLint modelLoc, GLint viewLoc, GLint projLoc, GLint cameraLoc);
 	~Camera();
 	void updateAngle(double x, double y, float deltaTime);
 	void move(int inputKey, float deltaTime);
@@ -17,6 +17,7 @@ private:
 	GLint _modelLoc;
 	GLint _viewLoc;
 	GLint _projLoc;
+	GLint _cameraLoc;
 
 	glm::vec3 _position;
 	glm::vec3 _direction;

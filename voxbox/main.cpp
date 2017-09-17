@@ -10,7 +10,7 @@ GLFWwindow *initWindow() {
 
 	//Create resizable GLFW window
 	glfwWindowHint(GLFW_RESIZABLE, GL_FALSE);
-	GLFWwindow* window = glfwCreateWindow(1280, 720, "VoxBox", nullptr, nullptr);
+	GLFWwindow* window = glfwCreateWindow(800, 600, "VoxBox", nullptr, nullptr);
 
 	return window;
 }
@@ -32,7 +32,8 @@ int main() {
 	GLint modelUniform = glGetUniformLocation(renderer->_shaderProgram, "model");
 	GLint viewUniform = glGetUniformLocation(renderer->_shaderProgram, "view");
 	GLint projUniform = glGetUniformLocation(renderer->_shaderProgram, "proj");
-	Camera *camera = new Camera(modelUniform, viewUniform, projUniform);
+	GLint cameraUniform = glGetUniformLocation(renderer->_shaderProgram, "cameraPos");
+	Camera *camera = new Camera(modelUniform, viewUniform, projUniform, cameraUniform);
 
 	glEnable(GL_DEPTH_TEST);
 	glEnable(GL_CULL_FACE);
@@ -53,11 +54,11 @@ int main() {
 		//Get co-ordinates of camera;
 		double xPos, yPos;
 		glfwGetCursorPos(window, &xPos, &yPos);
-		glfwSetCursorPos(window, 1280 / 2, 720 / 2);
+		glfwSetCursorPos(window, 800 / 2, 600 / 2);
 		camera->updateAngle(xPos, yPos, deltaTime);
 
-		//Clear background to black
-		glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+		//Clear background to a spacey purple!
+		glClearColor(0.16f, 0.0f, 0.12f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		renderer->render();
 

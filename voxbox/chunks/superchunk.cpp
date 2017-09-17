@@ -2,9 +2,9 @@
 
 SuperChunk::SuperChunk() {
 	_noise.SetNoiseType(FastNoise::SimplexFractal);
-	_noise.SetSeed(908237);
+	_noise.SetSeed(98572398);
 	_noise.SetFractalType(FastNoise::RigidMulti);
-	_noise.SetFrequency(0.003);
+	_noise.SetFrequency(0.005);
 	_noise.SetFractalOctaves(5);
 
 	for (int i = 0; i < CHUNKS_WORLD_X; ++i) {
@@ -59,7 +59,15 @@ void SuperChunk::populateChunk(Chunk *chunk, int xOff, int yOff, int zOff) {
 				//Set blocks under height range as active
 				for (int y = 0; y < CHUNK_Y; ++y) {
 					if (y < blocksVertical - yOff) {
-						chunk->setBlock(x, y, z, 1);
+						if (y + yOff > 40) {
+							chunk->setBlock(x, y, z, 3);
+						}
+						else if (y + yOff < 24) {
+							chunk->setBlock(x, y, z, 2);
+						}
+						else {
+							chunk->setBlock(x, y, z, 1);
+						}
 					}
 					else {
 						chunk->setBlock(x, y, z, 0);

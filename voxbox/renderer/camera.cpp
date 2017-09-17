@@ -2,7 +2,7 @@
 
 using namespace glm;
 
-Camera::Camera(GLint modelLoc, GLint viewLoc, GLint projLoc) {
+Camera::Camera(GLint modelLoc, GLint viewLoc, GLint projLoc, GLint cameraLoc) {
 	_modelLoc = modelLoc;
 	_viewLoc = viewLoc;
 	_projLoc = projLoc;
@@ -19,8 +19,10 @@ Camera::Camera(GLint modelLoc, GLint viewLoc, GLint projLoc) {
 	mat4 view = lookAt(vec3(_position), vec3(0, 0, 0), vec3(0, 1, 0));;
 	glUniformMatrix4fv(_viewLoc, 1, GL_FALSE, value_ptr(view));
 
-	mat4 proj = perspective(radians(70.0f), 1280.0f / 720.0f, 1.0f, 400.0f);
+	mat4 proj = perspective(radians(70.0f), 800.0f / 600.0f, 1.0f, 400.0f);
 	glUniformMatrix4fv(_projLoc, 1, GL_FALSE, value_ptr(proj));
+
+	glUniform3fv(_cameraLoc, 1, value_ptr(_position));
 }
 
 Camera::~Camera() { }
@@ -29,8 +31,8 @@ void Camera::updateAngle(double x, double y, float deltaTime) {
 	int xPos = floor(x);
 	int yPos = floor(y);
 
-	_horizontalAngle += _mouseSpeed * deltaTime * float(1280 / 2 - xPos);
-	_verticalAngle += _mouseSpeed * deltaTime * float(720 / 2 - yPos);
+	_horizontalAngle += _mouseSpeed * deltaTime * float(800 / 2 - xPos);
+	_verticalAngle += _mouseSpeed * deltaTime * float(600 / 2 - yPos);
 
 	_direction = vec3(cos(_verticalAngle) * sin(_horizontalAngle),
 		sin(_verticalAngle),
@@ -65,4 +67,6 @@ void Camera::move(int inputKey, float deltaTime) {
 void Camera::updateMatrices() {
 	mat4 view = lookAt(_position, _position + _direction, _up);
 	glUniformMatrix4fv(_viewLoc, 1, GL_FALSE, value_ptr(view));
+
+	glUniform3fv(_cameraLoc, 1, value_ptr(_position));
 }
