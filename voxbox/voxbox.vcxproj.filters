@@ -39,13 +39,13 @@
     <ClCompile Include="renderer\renderer.cpp">
       <Filter>Source Files\renderer</Filter>
     </ClCompile>
-    <ClCompile Include="chunks\superchunk.cpp">
-      <Filter>Source Files\chunks</Filter>
-    </ClCompile>
     <ClCompile Include="renderer\camera.cpp">
       <Filter>Source Files\renderer</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\..\..\..\..\..\FastNoise-master\FastNoise.cpp">
+      <Filter>Source Files\chunks</Filter>
+    </ClCompile>
+    <ClCompile Include="chunks\chunkmanager.cpp">
       <Filter>Source Files\chunks</Filter>
     </ClCompile>
   </ItemGroup>
@@ -62,13 +62,13 @@
     <ClInclude Include="shaders\shaders.h">
       <Filter>Header Files\shaders</Filter>
     </ClInclude>
-    <ClInclude Include="chunks\superchunk.h">
-      <Filter>Header Files\chunks</Filter>
-    </ClInclude>
     <ClInclude Include="renderer\camera.h">
       <Filter>Header Files\renderer</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\..\..\..\..\FastNoise-master\FastNoise.h">
+      <Filter>Header Files\chunks</Filter>
+    </ClInclude>
+    <ClInclude Include="chunks\chunkmanager.h">
       <Filter>Header Files\chunks</Filter>
     </ClInclude>
   </ItemGroup>

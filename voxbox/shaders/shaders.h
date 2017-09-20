@@ -38,7 +38,7 @@ public:
 
 			uniform vec3 cameraPos;
 			uniform vec3 lightColor;
-			uniform vec3 lightPos;
+			uniform vec3 lightDir;
 
 			out vec4 outColor;
 
@@ -66,20 +66,20 @@ public:
 				}				
 
 				//Ambient lighting
-				float ambientStrength = 0.15;
+				float ambientStrength = 0.45;
 				vec3 ambient = ambientStrength * lightColor;				
 
 				//Diffuse
 				//Normal computation for diffuse
 				vec3 norm = normalize(Normal);
-				vec3 lightDir = normalize(lightPos - FragPos);
+				vec3 lightDirection = normalize(-lightDir);
 				//Diffuse lighting
-				float diff = max(dot(norm, lightDir), 0.0);
+				float diff = max(dot(norm, lightDirection), 0.0);
 				vec3 diffuse = diff * lightColor;
 
 				//Specular highlighting
 				vec3 viewDir = normalize(cameraPos - FragPos);
-				vec3 reflectDir = reflect(-lightDir, norm);
+				vec3 reflectDir = reflect(-lightDirection, norm);
 				float spec = pow(max(dot(viewDir, reflectDir), 0.0), specPower);
 				vec3 specular = specStrength * spec * lightColor;
 

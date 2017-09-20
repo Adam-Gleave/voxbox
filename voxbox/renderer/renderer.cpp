@@ -1,29 +1,20 @@
-#include <list>
-#include "../chunks/superchunk.h"
-using namespace std;
+#include "../chunks/chunkmanager.h"
 using namespace glm;
 
-vec3 _lightPos;
-SuperChunk *_superChunk;
+ChunkManager *chunkManager;
 
 Renderer::Renderer(GLFWwindow *window) {
-	//Set global light position
-	_lightPos = vec3(64, 150, 64);
-	//Make new SuperChunk object
-	_superChunk = new SuperChunk();
+	//Make new chunk manager object
+	chunkManager = new ChunkManager();
 	_window = window;
 }
 
-Renderer::~Renderer() { 
+Renderer::~Renderer() {
 	glDeleteProgram(_shaderProgram);
 }
 
-void Renderer::render() {
-	_superChunk->render(this);
-
-	//Update buffers and register any events
-	glfwSwapBuffers(_window);
-	glfwPollEvents();
+void Renderer::render(vec3 position) {
+	chunkManager->render(this, position);
 }
 
 void Renderer::initShaders() {
@@ -51,8 +42,9 @@ void Renderer::initShaders() {
 	GLint lightUniform = glGetUniformLocation(_shaderProgram, "lightColor");
 	glUniform3fv(lightUniform, 1, value_ptr(lightColor));
 
-	GLint lightPosUniform = glGetUniformLocation(_shaderProgram, "lightPos");
-	glUniform3fv(lightPosUniform, 1, value_ptr(_lightPos));
+	vec3 lightDir = vec3(0.4, -1.0, 0.3);
+	GLint lightDirUniform = glGetUniformLocation(_shaderProgram, "lightDir");
+	glUniform3fv(lightDirUniform, 1, value_ptr(lightDir));
 }
 
 void Renderer::createArrays() {

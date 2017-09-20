@@ -8,7 +8,7 @@ Chunk::Chunk(int xOffset, int yOffset, int zOffset) {
 	for (int x = 0; x < CHUNK_X; ++x) {
 		for (int y = 0; y < CHUNK_Y; ++y) {
 			for (int z = 0; z < CHUNK_Z; ++z) {
-				_blocks[x][y][z] = Block();
+				_blocks[x][y][z] = new Block();
 			}
 		}
 	}
@@ -22,6 +22,10 @@ Chunk::Chunk(int xOffset, int yOffset, int zOffset) {
 
 Chunk::~Chunk() {
 	glDeleteBuffers(1, &_vbo);
+
+	for each (Block *block in _blocks) {
+		delete block;
+	}
 }
 
 void Chunk::render(Renderer *renderer) {
@@ -39,12 +43,12 @@ void Chunk::render(Renderer *renderer) {
 }
 
 GLbyte Chunk::getBlock(int x, int y, int z) {
-	return _blocks[x][y][z].getType();
+	return _blocks[x][y][z]->getType();
 }
 
 void Chunk::setBlock(int x, int y, int z, GLbyte type) {
 	_changed = true;
-	_blocks[x][y][z].setType(type);
+	_blocks[x][y][z]->setType(type);
 }
 
 void Chunk::updateMesh() {
@@ -55,7 +59,7 @@ void Chunk::updateMesh() {
 	for (int x = 0; x < CHUNK_X; ++x) {
 		for (int y = 0; y < CHUNK_Y; ++y) {
 			for (int z = 0; z < CHUNK_Z; ++z) {
-				GLbyte type = _blocks[x][y][z].getType();
+				GLbyte type = _blocks[x][y][z]->getType();
 
 				//Don't add vertices of empty (default) blocks
 				if (type == 0) {
@@ -63,7 +67,7 @@ void Chunk::updateMesh() {
 				}
 
 				//Cull faces that are occluded by other blocks
-				if (z == 0 || _blocks[x][y][z - 1].getType() == 0) {
+				if (z == 0 || _blocks[x][y][z - 1]->getType() == 0) {
 					byte3 normals = byte3(0, 0, -1);
 
 					//Add vertex coordinates to vertex buffer
@@ -88,7 +92,7 @@ void Chunk::updateMesh() {
 					verts[vertCount++].normals = normals;
 				}
 
-				if (z == CHUNK_Z - 1 || _blocks[x][y][z + 1].getType() == 0) {
+				if (z == CHUNK_Z - 1 || _blocks[x][y][z + 1]->getType() == 0) {
 					byte3 normals = byte3(0, 0, 1);
 
 					verts[vertCount].coords = byte4(x, y, z + 1, type);			
@@ -110,7 +114,7 @@ void Chunk::updateMesh() {
 					verts[vertCount++].normals = normals;
 				}
 
-				if (x == 0 || _blocks[x - 1][y][z].getType() == 0) {
+				if (x == 0 || _blocks[x - 1][y][z]->getType() == 0) {
 					byte3 normals = byte3(-1, 0, 0);
 
 					verts[vertCount].coords = byte4(x, y + 1, z + 1, type);		
@@ -132,7 +136,7 @@ void Chunk::updateMesh() {
 					verts[vertCount++].normals = normals;
 				}
 
-				if (x == CHUNK_X - 1 || _blocks[x + 1][y][z].getType() == 0) {
+				if (x == CHUNK_X - 1 || _blocks[x + 1][y][z]->getType() == 0) {
 					byte3 normals = byte3(1, 0, 0);
 
 					verts[vertCount].coords = byte4(x + 1, y, z, type);
@@ -154,7 +158,7 @@ void Chunk::updateMesh() {
 					verts[vertCount++].normals = normals;
 				}
 
-				if (y == 0 || _blocks[x][y - 1][z].getType() == 0) {
+				if (y == 0 || _blocks[x][y - 1][z]->getType() == 0) {
 					byte3 normals = byte3(0, -1, 0);
 
 					verts[vertCount].coords = byte4(x, y, z, type);
@@ -176,7 +180,7 @@ void Chunk::updateMesh() {
 					verts[vertCount++].normals = normals;
 				}
 
-				if (y == CHUNK_Y - 1 || _blocks[x][y + 1][z].getType() == 0) {
+				if (y == CHUNK_Y - 1 || _blocks[x][y + 1][z]->getType() == 0) {
 					byte3 normals = byte3(0, 1, 0);
 
 					verts[vertCount].coords = byte4(x + 1, y + 1, z + 1, type);

@@ -3,6 +3,7 @@
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
+using namespace glm;
 
 class Camera
 {
@@ -12,6 +13,7 @@ public:
 	void updateAngle(double x, double y, float deltaTime);
 	void move(int inputKey, float deltaTime);
 	void updateMatrices();
+	vec3 getPosition();
 
 private:
 	GLint _modelLoc;
@@ -19,7 +21,7 @@ private:
 	GLint _projLoc;
 	GLint _cameraLoc;
 
-	glm::vec3 _position;
+	glm::vec3 _position = vec3(1.0f);
 	glm::vec3 _direction;
 	glm::vec3 _up;
 	glm::vec3 _right;

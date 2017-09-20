@@ -79,7 +79,7 @@
     <LinkIncremental>true</LinkIncremental>
     <ExecutablePath>$(ExecutablePath)</ExecutablePath>
     <LibraryPath>C:\glew-2.1.0\lib\Release\Win32;C:\glfw-3.2.1.bin.WIN32\lib-vc2015;$(LibraryPath)</LibraryPath>
-    <IncludePath>C:\glew-2.1.0\include;C:\glfw-3.2.1.bin.WIN32\include;$(IncludePath)</IncludePath>
+    <IncludePath>C:\glm\glm;C:\glew-2.1.0\include;C:\glfw-3.2.1.bin.WIN32\include;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
@@ -95,6 +95,7 @@
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
+      <AdditionalIncludeDirectories>C:\FastNoise-master;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -110,6 +111,7 @@
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
+      <AdditionalIncludeDirectories>C:\FastNoise-master;C:\glm;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -156,7 +158,7 @@
   <ItemGroup>
     <ClCompile Include="..\..\..\..\..\..\..\..\FastNoise-master\FastNoise.cpp" />
     <ClCompile Include="chunks\chunk.cpp" />
-    <ClCompile Include="chunks\superchunk.cpp" />
+    <ClCompile Include="chunks\chunkmanager.cpp" />
     <ClCompile Include="main.cpp">
       <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">C:\glfw-3.2.1.bin.WIN64\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
@@ -167,7 +169,7 @@
     <ClInclude Include="..\..\..\..\..\..\..\..\FastNoise-master\FastNoise.h" />
     <ClInclude Include="chunks\block.h" />
     <ClInclude Include="chunks\chunk.h" />
-    <ClInclude Include="chunks\superchunk.h" />
+    <ClInclude Include="chunks\chunkmanager.h" />
     <ClInclude Include="renderer\camera.h" />
     <ClInclude Include="renderer\renderer.h" />
     <ClInclude Include="shaders\shaders.h" />
