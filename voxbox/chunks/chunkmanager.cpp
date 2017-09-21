@@ -11,6 +11,16 @@ ChunkManager::ChunkManager() {
 	_noise.SetFrequency(0.005);
 	_noise.SetFractalOctaves(5);
 
+	_3dNoise_1.SetNoiseType(FastNoise::Perlin);
+	_3dNoise_1.SetSeed(39407);
+	_3dNoise_1.SetFrequency(0.03);
+
+	_3dNoise_2.SetNoiseType(FastNoise::SimplexFractal);
+	_3dNoise_2.SetSeed(309130);
+	_3dNoise_2.SetFractalType(FastNoise::RigidMulti);
+	_3dNoise_2.SetFrequency(0.1);
+	_3dNoise_2.SetFractalOctaves(6);
+
 	for (int i = 0; i < CHUNKS_WORLD_X; ++i) {
 		for (int j = 0; j < CHUNKS_WORLD_Y; ++j) {
 			for (int k = 0; k < CHUNKS_WORLD_Z; ++k) {
@@ -121,16 +131,33 @@ void ChunkManager::populateChunk(Chunk *chunk, int xOff, int yOff, int zOff) {
 				int blocksVertical = WORLD_HEIGHT_CENTER + floor(height * CHUNK_Y);
 
 				//Set blocks under height range as active
+				//Use a 3d noise and remove blocks under a certain value
 				for (int y = 0; y < CHUNK_Y; ++y) {
-					if (y < blocksVertical - yOff) {
-						if (y + yOff > 40) {
-							chunk->setBlock(x, y, z, 3);
+					int ycoord = y + yOff;
+					float value = 0;
+
+					if (ycoord <= (CHUNKS_WORLD_Y * CHUNK_Y) / 2.5) {
+						value = _3dNoise_1.GetValue(xcoord, ycoord, zcoord);
+
+						if (value <= -0.5) {
+							value += _3dNoise_2.GetValue(xcoord, ycoord, zcoord);
 						}
-						else if (y + yOff < 24) {
-							chunk->setBlock(x, y, z, 2);
+					}
+
+					if (value > -0.5) {
+						if (y < blocksVertical - yOff) {
+							if (y + yOff > 40) {
+								chunk->setBlock(x, y, z, 3);
+							}
+							else if (y + yOff < 24) {
+								chunk->setBlock(x, y, z, 2);
+							}
+							else {
+								chunk->setBlock(x, y, z, 1);
+							}
 						}
 						else {
-							chunk->setBlock(x, y, z, 1);
+							chunk->setBlock(x, y, z, 0);
 						}
 					}
 					else {

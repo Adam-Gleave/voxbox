@@ -16,4 +16,6 @@ private:
 	Chunk *_chunks[CHUNKS_WORLD_X][CHUNKS_WORLD_Y][CHUNKS_WORLD_Z];
 	vec2 _xBuffer[CHUNKS_WORLD_Y][CHUNKS_WORLD_Z];
 	FastNoise _noise;
+	FastNoise _3dNoise_1;
+	FastNoise _3dNoise_2;
 };
