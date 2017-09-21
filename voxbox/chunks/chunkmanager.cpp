@@ -6,20 +6,10 @@ using namespace glm;
 ChunkManager::ChunkManager() {
 	//Initialise noise function
 	_noise.SetNoiseType(FastNoise::SimplexFractal);
-	_noise.SetSeed(98572398);
+	_noise.SetSeed(2837581);
 	_noise.SetFractalType(FastNoise::RigidMulti);
 	_noise.SetFrequency(0.005);
-	_noise.SetFractalOctaves(5);
-
-	_3dNoise_1.SetNoiseType(FastNoise::Perlin);
-	_3dNoise_1.SetSeed(39407);
-	_3dNoise_1.SetFrequency(0.03);
-
-	_3dNoise_2.SetNoiseType(FastNoise::SimplexFractal);
-	_3dNoise_2.SetSeed(309130);
-	_3dNoise_2.SetFractalType(FastNoise::RigidMulti);
-	_3dNoise_2.SetFrequency(0.1);
-	_3dNoise_2.SetFractalOctaves(6);
+	_noise.SetFractalOctaves(7);
 
 	for (int i = 0; i < CHUNKS_WORLD_X; ++i) {
 		for (int j = 0; j < CHUNKS_WORLD_Y; ++j) {
@@ -120,50 +110,29 @@ void ChunkManager::manageChunks(vec3 position) {
 
 void ChunkManager::populateChunk(Chunk *chunk, int xOff, int yOff, int zOff) {
 	for (int x = 0; x < CHUNK_X; ++x) {
+		for (int y = 0; y < CHUNK_Y; ++y) {
 			for (int z = 0; z < CHUNK_Z; ++z) {
 				int xcoord = x + xOff;
+				int ycoord = y + yOff;
 				int zcoord = z + zOff;
 
-				//Retrieve a coordinate-based height value using simplex noise
-				float height = _noise.GetNoise(xcoord, zcoord);
-				
-				//Work out y height of blocks in x/z coordinate
-				int blocksVertical = WORLD_HEIGHT_CENTER + floor(height * CHUNK_Y);
+				int midpoint = (CHUNKS_WORLD_Y * CHUNK_Y) / 2;
 
-				//Set blocks under height range as active
-				//Use a 3d noise and remove blocks under a certain value
-				for (int y = 0; y < CHUNK_Y; ++y) {
-					int ycoord = y + yOff;
-					float value = 0;
+				if (ycoord == 60) {
+					auto debug = true; 
+				};
 
-					if (ycoord <= (CHUNKS_WORLD_Y * CHUNK_Y) / 2.5) {
-						value = _3dNoise_1.GetValue(xcoord, ycoord, zcoord);
+				float density = _noise.GetNoise(xcoord, ycoord, zcoord);
+				float heightDifference = (float)(ycoord - midpoint) / midpoint;
+				density -= heightDifference;
 
-						if (value <= -0.5) {
-							value += _3dNoise_2.GetValue(xcoord, ycoord, zcoord);
-						}
-					}
-
-					if (value > -0.5) {
-						if (y < blocksVertical - yOff) {
-							if (y + yOff > 40) {
-								chunk->setBlock(x, y, z, 3);
-							}
-							else if (y + yOff < 24) {
-								chunk->setBlock(x, y, z, 2);
-							}
-							else {
-								chunk->setBlock(x, y, z, 1);
-							}
-						}
-						else {
-							chunk->setBlock(x, y, z, 0);
-						}
-					}
-					else {
-						chunk->setBlock(x, y, z, 0);
-					}
+				if (density >= 0) {
+					chunk->setBlock(x, y, z, 1);
 				}
+				else {
+					chunk->setBlock(x, y, z, 0);
+				}
+			}
 		}
 	}
 }
