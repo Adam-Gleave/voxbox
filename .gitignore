@@ -9,6 +9,8 @@
 *.userosscache
 *.sln.docstates
 
+voxbox/chunks/octree/
+
 # User-specific files (MonoDevelop/Xamarin Studio)
 *.userprefs
 

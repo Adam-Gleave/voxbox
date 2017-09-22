@@ -6,10 +6,11 @@ using namespace glm;
 ChunkManager::ChunkManager() {
 	//Initialise noise function
 	_noise.SetNoiseType(FastNoise::SimplexFractal);
-	_noise.SetSeed(2837581);
+	_noise.SetSeed(826476);
 	_noise.SetFractalType(FastNoise::RigidMulti);
 	_noise.SetFrequency(0.005);
-	_noise.SetFractalOctaves(7);
+	_noise.SetFractalOctaves(6);
+	_noise.SetFractalLacunarity(1.9);
 
 	for (int i = 0; i < CHUNKS_WORLD_X; ++i) {
 		for (int j = 0; j < CHUNKS_WORLD_Y; ++j) {
@@ -51,61 +52,61 @@ void ChunkManager::render(Renderer *renderer, vec3 position) {
 }
 
 void ChunkManager::manageChunks(vec3 position) {
-	int x = round(position.x);
-	int y = round(position.y);
-	int z = round(position.z);
+	//int x = round(position.x);
+	//int y = round(position.y);
+	//int z = round(position.z);
 
-	//Movement in +x direction, generate new set of chunks
-	if (x > _chunks[4][0][4]->getX()) {
-		//Obtain x offset of furthest block in +x
-		int xOffset = _chunks[CHUNKS_WORLD_X - 1][0][0]->getX();
+	////Movement in +x direction, generate new set of chunks
+	//if (x > _chunks[4][0][4]->getX()) {
+	//	//Obtain x offset of furthest block in +x
+	//	int xOffset = _chunks[CHUNKS_WORLD_X - 1][0][0]->getX();
 
-		//Delete chunks furthest in -x
-		for (int y = 0; y < CHUNKS_WORLD_Y; y++) {
-			for (int z = 0; z < CHUNKS_WORLD_Z; z++) {
-				delete _chunks[0][y][z];
-			}
-		}
+	//	//Delete chunks furthest in -x
+	//	for (int y = 0; y < CHUNKS_WORLD_Y; y++) {
+	//		for (int z = 0; z < CHUNKS_WORLD_Z; z++) {
+	//			delete _chunks[0][y][z];
+	//		}
+	//	}
 
-		//Shift the contents of the chunk array down 1 x dimension
-		memcpy(&_chunks[0][0][0], &_chunks[1][0][0], 5 * (sizeof(_chunks) / 6));
-		
-		for (int y = 0; y < CHUNKS_WORLD_Y; y++) {
-			for (int z = 0; z < CHUNKS_WORLD_Z; z++) {
-				int yOffset = y * CHUNK_Y;
-				int zOffset = z * CHUNK_Z;
+	//	//Shift the contents of the chunk array down 1 x dimension
+	//	memcpy(&_chunks[0][0][0], &_chunks[1][0][0], 5 * (sizeof(_chunks) / 6));
+	//	
+	//	for (int y = 0; y < CHUNKS_WORLD_Y; y++) {
+	//		for (int z = 0; z < CHUNKS_WORLD_Z; z++) {
+	//			int yOffset = y * CHUNK_Y;
+	//			int zOffset = z * CHUNK_Z;
 
-				_chunks[CHUNKS_WORLD_X - 1][y][z] = new Chunk(xOffset + CHUNK_X, yOffset, zOffset);
-				populateChunk(_chunks[CHUNKS_WORLD_X - 1][y][z], xOffset + CHUNK_X, yOffset, zOffset);
-			}
-		}
-	}
+	//			_chunks[CHUNKS_WORLD_X - 1][y][z] = new Chunk(xOffset + CHUNK_X, yOffset, zOffset);
+	//			populateChunk(_chunks[CHUNKS_WORLD_X - 1][y][z], xOffset + CHUNK_X, yOffset, zOffset);
+	//		}
+	//	}
+	//}
 
-	//Movement in -x direction, generate new set of chunks
-	if (x < _chunks[2][0][4]->getX()) {
-		//Obtain x offset of furthest block in -x
-		int xOffset = _chunks[0][0][0]->getX();
+	////Movement in -x direction, generate new set of chunks
+	//if (x < _chunks[2][0][4]->getX()) {
+	//	//Obtain x offset of furthest block in -x
+	//	int xOffset = _chunks[0][0][0]->getX();
 
-		//Delete chunks furthest in -x
-		for (int y = 0; y < CHUNKS_WORLD_Y; y++) {
-			for (int z = 0; z < CHUNKS_WORLD_Z; z++) {
-				delete _chunks[CHUNKS_WORLD_X - 1][y][z];
-			}
-		}
+	//	//Delete chunks furthest in -x
+	//	for (int y = 0; y < CHUNKS_WORLD_Y; y++) {
+	//		for (int z = 0; z < CHUNKS_WORLD_Z; z++) {
+	//			delete _chunks[CHUNKS_WORLD_X - 1][y][z];
+	//		}
+	//	}
 
-		//Shift the contents of the chunk array up 1 x dimension
-		memcpy(&_chunks[1][0][0], &_chunks[0][0][0], 5 * (sizeof(_chunks) / 6));
+	//	//Shift the contents of the chunk array up 1 x dimension
+	//	memcpy(&_chunks[1][0][0], &_chunks[0][0][0], 5 * (sizeof(_chunks) / 6));
 
-		for (int y = 0; y < CHUNKS_WORLD_Y; y++) {
-			for (int z = 0; z < CHUNKS_WORLD_Z; z++) {
-				int yOffset = y * CHUNK_Y;
-				int zOffset = z * CHUNK_Z;
+	//	for (int y = 0; y < CHUNKS_WORLD_Y; y++) {
+	//		for (int z = 0; z < CHUNKS_WORLD_Z; z++) {
+	//			int yOffset = y * CHUNK_Y;
+	//			int zOffset = z * CHUNK_Z;
 
-				_chunks[0][y][z] = new Chunk(xOffset - CHUNK_X, yOffset, zOffset);
-				populateChunk(_chunks[0][y][z], xOffset - CHUNK_X, yOffset, zOffset);
-			}
-		}
-	}
+	//			_chunks[0][y][z] = new Chunk(xOffset - CHUNK_X, yOffset, zOffset);
+	//			populateChunk(_chunks[0][y][z], xOffset - CHUNK_X, yOffset, zOffset);
+	//		}
+	//	}
+	//}
 }
 
 void ChunkManager::populateChunk(Chunk *chunk, int xOff, int yOff, int zOff) {
@@ -116,25 +117,69 @@ void ChunkManager::populateChunk(Chunk *chunk, int xOff, int yOff, int zOff) {
 				int ycoord = y + yOff;
 				int zcoord = z + zOff;
 
-				int midpoint = (CHUNKS_WORLD_Y * CHUNK_Y) / 2;
+				int vertSolidCount = 0;
 
-				if (ycoord == 60) {
-					auto debug = true; 
-				};
-
-				float density = _noise.GetNoise(xcoord, ycoord, zcoord);
-				float heightDifference = (float)(ycoord - midpoint) / midpoint;
-				density -= heightDifference;
-
-				if (density >= 0) {
-					chunk->setBlock(x, y, z, 1);
+				if (ycoord == 63) {
+					auto debug = true;
 				}
-				else {
-					chunk->setBlock(x, y, z, 0);
+
+				//Determine the density of each vertex of the voxel
+				chunk->gridVertDensities[x][y][z] = getDensity(xcoord - 0.5, ycoord - 0.5, zcoord - 0.5, &vertSolidCount);
+				chunk->gridVertDensities[x + 1][y][z] = getDensity(xcoord + 0.5, ycoord - 0.5, zcoord - 0.5, &vertSolidCount);
+				chunk->gridVertDensities[x + 1][y][z + 1] = getDensity(xcoord + 0.5, ycoord - 0.5, zcoord + 0.5, &vertSolidCount);
+				chunk->gridVertDensities[x][y][z + 1] = getDensity(xcoord - 0.5, ycoord - 0.6, zcoord + 0.5, &vertSolidCount);
+				chunk->gridVertDensities[x][y + 1][z] = getDensity(xcoord - 0.5, ycoord + 0.5, zcoord - 0.5, &vertSolidCount);
+				chunk->gridVertDensities[x + 1][y + 1][z] = getDensity(xcoord + 0.5, ycoord + 0.5, zcoord - 0.5, &vertSolidCount);
+				chunk->gridVertDensities[x + 1][y + 1][z + 1] = getDensity(xcoord + 0.5, ycoord + 0.5, zcoord + 0.5, &vertSolidCount);
+				chunk->gridVertDensities[x][y + 1][z + 1] = getDensity(xcoord - 0.5, ycoord + 0.5, zcoord + 0.5, &vertSolidCount);
+
+				bool solid = false;
+
+				if (vertSolidCount >= 2) {
+					solid = true;
+				}				
+
+				uint8_t type = 0;
+
+				if (solid) {
+					if (ycoord > 52) {
+						type = 3;
+					}
+					else if (ycoord < 28) {
+						type = 2;
+					}
+					else {
+						type = 1;
+					}
 				}
+
+				chunk->setBlock(x, y, z, type);
 			}
 		}
 	}
+}
+
+float ChunkManager::getDensity(float x, float y, float z, int *isPositive) {
+	//Values used in density function
+	int midpoint = WORLD_HEIGHT_CENTER;
+	float density = 0;
+	float heightDifference = (float)(y - midpoint) / midpoint;
+
+	density = _noise.GetNoise(x, y, z);
+
+	//Hard floor below certain y value
+	if (y < 24) {
+		heightDifference *= 1.2 * (24 - y);
+	}
+
+	//Finalise density value
+	density -= heightDifference;
+	
+	if (density > 0) {
+		*isPositive += 1;
+	}
+
+	return density;
 }
 
 Chunk *ChunkManager::getChunk(int x, int y, int z) {
