@@ -4,14 +4,6 @@
 using namespace glm;
 
 ChunkManager::ChunkManager() {
-	//Initialise noise function
-	_noise.SetNoiseType(FastNoise::SimplexFractal);
-	_noise.SetSeed(826476);
-	_noise.SetFractalType(FastNoise::RigidMulti);
-	_noise.SetFrequency(0.005);
-	_noise.SetFractalOctaves(6);
-	_noise.SetFractalLacunarity(1.9);
-
 	for (int i = 0; i < CHUNKS_WORLD_X; ++i) {
 		for (int j = 0; j < CHUNKS_WORLD_Y; ++j) {
 			for (int k = 0; k < CHUNKS_WORLD_Z; ++k) {
@@ -124,14 +116,14 @@ void ChunkManager::populateChunk(Chunk *chunk, int xOff, int yOff, int zOff) {
 				}
 
 				//Determine the density of each vertex of the voxel
-				chunk->gridVertDensities[x][y][z] = getDensity(xcoord - 0.5, ycoord - 0.5, zcoord - 0.5, &vertSolidCount);
-				chunk->gridVertDensities[x + 1][y][z] = getDensity(xcoord + 0.5, ycoord - 0.5, zcoord - 0.5, &vertSolidCount);
-				chunk->gridVertDensities[x + 1][y][z + 1] = getDensity(xcoord + 0.5, ycoord - 0.5, zcoord + 0.5, &vertSolidCount);
-				chunk->gridVertDensities[x][y][z + 1] = getDensity(xcoord - 0.5, ycoord - 0.6, zcoord + 0.5, &vertSolidCount);
-				chunk->gridVertDensities[x][y + 1][z] = getDensity(xcoord - 0.5, ycoord + 0.5, zcoord - 0.5, &vertSolidCount);
-				chunk->gridVertDensities[x + 1][y + 1][z] = getDensity(xcoord + 0.5, ycoord + 0.5, zcoord - 0.5, &vertSolidCount);
-				chunk->gridVertDensities[x + 1][y + 1][z + 1] = getDensity(xcoord + 0.5, ycoord + 0.5, zcoord + 0.5, &vertSolidCount);
-				chunk->gridVertDensities[x][y + 1][z + 1] = getDensity(xcoord - 0.5, ycoord + 0.5, zcoord + 0.5, &vertSolidCount);
+				chunk->gridVertDensities[x][y][z] = densityFunction.getDensity(xcoord - 0.5, ycoord - 0.5, zcoord - 0.5, &vertSolidCount);
+				chunk->gridVertDensities[x + 1][y][z] = densityFunction.getDensity(xcoord + 0.5, ycoord - 0.5, zcoord - 0.5, &vertSolidCount);
+				chunk->gridVertDensities[x + 1][y][z + 1] = densityFunction.getDensity(xcoord + 0.5, ycoord - 0.5, zcoord + 0.5, &vertSolidCount);
+				chunk->gridVertDensities[x][y][z + 1] = densityFunction.getDensity(xcoord - 0.5, ycoord - 0.6, zcoord + 0.5, &vertSolidCount);
+				chunk->gridVertDensities[x][y + 1][z] = densityFunction.getDensity(xcoord - 0.5, ycoord + 0.5, zcoord - 0.5, &vertSolidCount);
+				chunk->gridVertDensities[x + 1][y + 1][z] = densityFunction.getDensity(xcoord + 0.5, ycoord + 0.5, zcoord - 0.5, &vertSolidCount);
+				chunk->gridVertDensities[x + 1][y + 1][z + 1] = densityFunction.getDensity(xcoord + 0.5, ycoord + 0.5, zcoord + 0.5, &vertSolidCount);
+				chunk->gridVertDensities[x][y + 1][z + 1] = densityFunction.getDensity(xcoord - 0.5, ycoord + 0.5, zcoord + 0.5, &vertSolidCount);
 
 				bool solid = false;
 
@@ -157,29 +149,6 @@ void ChunkManager::populateChunk(Chunk *chunk, int xOff, int yOff, int zOff) {
 			}
 		}
 	}
-}
-
-float ChunkManager::getDensity(float x, float y, float z, int *isPositive) {
-	//Values used in density function
-	int midpoint = WORLD_HEIGHT_CENTER;
-	float density = 0;
-	float heightDifference = (float)(y - midpoint) / midpoint;
-
-	density = _noise.GetNoise(x, y, z);
-
-	//Hard floor below certain y value
-	if (y < 24) {
-		heightDifference *= 1.2 * (24 - y);
-	}
-
-	//Finalise density value
-	density -= heightDifference;
-	
-	if (density > 0) {
-		*isPositive += 1;
-	}
-
-	return density;
 }
 
 Chunk *ChunkManager::getChunk(int x, int y, int z) {

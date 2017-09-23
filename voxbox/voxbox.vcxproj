@@ -170,7 +170,7 @@
     <ClInclude Include="chunks\block.h" />
     <ClInclude Include="chunks\chunk.h" />
     <ClInclude Include="chunks\chunkmanager.h" />
-    <ClInclude Include="chunks\octree\octree.h" />
+    <ClInclude Include="chunks\density.h" />
     <ClInclude Include="renderer\camera.h" />
     <ClInclude Include="renderer\renderer.h" />
     <ClInclude Include="shaders\shaders.h" />

@@ -1,6 +1,5 @@
 #include <FastNoise.h>
 #include "chunk.h"
-#include "octree/octree.h"
 using namespace glm;
 
 class ChunkManager {
@@ -13,7 +12,7 @@ public:
 	void manageChunks(vec3 position);
 
 private:
-	float getDensity(float x, float y, float z, int *isPositive);
+	DensityFunction densityFunction = DensityFunction();
 	void populateChunk(Chunk *chunk, int xOff, int yOff, int zOff);
 	vec2 _xBuffer[CHUNKS_WORLD_Y][CHUNKS_WORLD_Z];
 	FastNoise _noise;

@@ -71,7 +71,7 @@
     <ClInclude Include="chunks\chunkmanager.h">
       <Filter>Header Files\chunks</Filter>
     </ClInclude>
-    <ClInclude Include="chunks\octree\octree.h">
+    <ClInclude Include="chunks\density.h">
       <Filter>Header Files\chunks</Filter>
     </ClInclude>
   </ItemGroup>
