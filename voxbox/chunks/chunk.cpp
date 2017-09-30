@@ -4,6 +4,9 @@
 #include <list>
 using namespace glm;
 
+const float QEF_ERROR = 1e-20f;
+const int QEF_SWEEPS = 4;
+
 Chunk::Chunk(int xOffset, int yOffset, int zOffset) {
 	_offset[0] = xOffset;
 	_offset[1] = yOffset;
@@ -40,11 +43,11 @@ void Chunk::setBlock(int x, int y, int z, GLbyte type) {
 	_blocks[x][y][z]->setType(type);
 }
 
-vec3 Chunk::getIntersectionPoint(vec3 &pos1, vec3 &pos2, const int edgeRef) {	
-	float numerator = 0;
-	numerator -= densityFunction.getDensity(pos1.x, pos1.y, pos1.z);
-	float divisor = numerator - densityFunction.getDensity(pos2.x, pos2.y, pos2.z);
-	float distance = numerator / divisor;
+vec3 Chunk::getIntersectionPoint(const vec3 &pos1, const vec3 &pos2, const int edgeRef) {	
+	const float density1 = densityFunction.getDensity(pos1.x, pos1.y, pos1.z);
+	const float density2 = densityFunction.getDensity(pos2.x, pos2.y, pos2.z);
+	float difference = density2 - density1;
+	float distance = -density1 / difference;
 	vec3 point;
 
 	//Create coordinate vector from point
@@ -62,7 +65,7 @@ vec3 Chunk::getIntersectionPoint(vec3 &pos1, vec3 &pos2, const int edgeRef) {
 }
 
 //Calculate normal by testing density function at intervals in each axis
-vec3 Chunk::getIntersectionNormal(vec3 &pos) {
+vec3 Chunk::getIntersectionNormal(const vec3 &pos) {
 	const float interval = 0.001f;
 	float x = pos.x;
 	float y = pos.y;
@@ -127,14 +130,16 @@ void Chunk::updateMesh() {
 
 				vec3 normals[MAX_CROSSINGS];
 				vec3 positions[MAX_CROSSINGS];
+				vec3 averageNormal = vec3(0.0f);
+				svd::QefSolver qef;
 
 				//Iterate through each edge, taking the vertex densities
 				for (int i = 0; i < 12 && edgeCount < MAX_CROSSINGS; i++) {
-					int corner1 = edgeVertexMap[i][0];
-					int corner2 = edgeVertexMap[i][1];
+					const int corner1 = edgeVertexMap[i][0];
+					const int corner2 = edgeVertexMap[i][1];
 
-					float material1 = vertices[corner1];
-					float material2 = vertices[corner2];
+					const float material1 = vertices[corner1];
+					const float material2 = vertices[corner2];
 
 					//If the edge is all part of mesh or air, it has no boundary
 					if (material1 < 0 && material2 < 0 ||
@@ -143,34 +148,38 @@ void Chunk::updateMesh() {
 					}
 
 					//Work out position of each corner in world as a vector
-					vec3 position1 = globalOffset + (vec3)VERTEX_OFFSETS[corner1];
-					vec3 position2 = globalOffset + (vec3)VERTEX_OFFSETS[corner2];
+					const vec3 position1 = globalOffset + (vec3)VERTEX_OFFSETS[corner1];
+					const vec3 position2 = globalOffset + (vec3)VERTEX_OFFSETS[corner2];
 
 					//Calculate hermite data from these positions
-					vec3 intersectionPoint = getIntersectionPoint(position1, position2, i);
-					positions[edgeCount] = intersectionPoint;
-					normals[edgeCount] = getIntersectionNormal(intersectionPoint);
+					const vec3 intersectionPoint = getIntersectionPoint(position1, position2, i);
+					const vec3 normals = getIntersectionNormal(intersectionPoint);
+					averageNormal += normals;
+					qef.add(intersectionPoint.x, intersectionPoint.y, intersectionPoint.z,
+						normals.x, normals.y, normals.z);
 
 					edgeCount++;
 				}
 
-				//For all voxels that lie on the mesh surface
 				if (edgeCount > 0) {
-					//Work out average normal (normal of voxel vertex)
-					for (int i = 0; i < edgeCount; i++) {
-						_blocks[x][y][z]->drawInfo.normals += normals[i];
+					svd::Vec3 qefPosition;
+					qef.solve(qefPosition, QEF_ERROR, QEF_SWEEPS, QEF_ERROR);
+
+					_blocks[x][y][z]->drawInfo.position = vec3(qefPosition.x, qefPosition.y, qefPosition.z);
+
+					const vec3 min = globalOffset;
+					const vec3 max = globalOffset + vec3(1.0f, 1.0f, 1.0f);
+					const vec3 position = _blocks[x][y][z]->drawInfo.position;
+
+					if ((position.x < min.x || position.x > max.x) ||
+						(position.y < min.y || position.y > max.y) ||
+						(position.z < min.z || position.z > max.z)) {
+						const auto& massPoint = qef.getMassPoint();
+						_blocks[x][y][z]->drawInfo.position = vec3(massPoint.x, massPoint.y, massPoint.z);
 					}
 
-					_blocks[x][y][z]->drawInfo.normals = normalize(_blocks[x][y][z]->
-						drawInfo.normals);
+					_blocks[x][y][z]->drawInfo.normals = normalize(averageNormal / (float)edgeCount);
 				}
-
-
-
-
-
-
-
 
 
 

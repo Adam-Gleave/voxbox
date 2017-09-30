@@ -14,6 +14,7 @@
 #include "block.h"
 #include "../renderer/renderer.h"
 #include "density.h"
+#include "qef.h"
 
 typedef glm::tvec3<GLbyte> byte3;
 typedef glm::tvec4<GLbyte> byte4;
@@ -37,8 +38,8 @@ public:
 	int getY() { return _offset[1]; };
 	int getZ() { return _offset[2]; };
 	float gridVertDensities[CHUNK_X + 1][CHUNK_Y + 1][CHUNK_Z + 1];
-	vec3 getIntersectionPoint(vec3 &pos1, vec3 &pos2, const int edgeRef);
-	vec3 getIntersectionNormal(vec3 &pos);
+	vec3 getIntersectionPoint(const vec3 &pos1, const vec3 &pos2, const int edgeRef);
+	vec3 getIntersectionNormal(const vec3 &pos);
 
 private:
 	DensityFunction densityFunction = DensityFunction();

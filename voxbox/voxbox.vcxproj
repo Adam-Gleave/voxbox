@@ -159,6 +159,8 @@
     <ClCompile Include="..\..\..\..\..\..\..\..\FastNoise-master\FastNoise.cpp" />
     <ClCompile Include="chunks\chunk.cpp" />
     <ClCompile Include="chunks\chunkmanager.cpp" />
+    <ClCompile Include="chunks\qef.cpp" />
+    <ClCompile Include="chunks\svd.cpp" />
     <ClCompile Include="main.cpp">
       <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">C:\glfw-3.2.1.bin.WIN64\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
@@ -171,6 +173,8 @@
     <ClInclude Include="chunks\chunk.h" />
     <ClInclude Include="chunks\chunkmanager.h" />
     <ClInclude Include="chunks\density.h" />
+    <ClInclude Include="chunks\qef.h" />
+    <ClInclude Include="chunks\svd.h" />
     <ClInclude Include="renderer\camera.h" />
     <ClInclude Include="renderer\renderer.h" />
     <ClInclude Include="shaders\shaders.h" />

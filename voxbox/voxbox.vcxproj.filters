@@ -48,6 +48,12 @@
     <ClCompile Include="chunks\chunkmanager.cpp">
       <Filter>Source Files\chunks</Filter>
     </ClCompile>
+    <ClCompile Include="chunks\qef.cpp">
+      <Filter>Source Files\chunks</Filter>
+    </ClCompile>
+    <ClCompile Include="chunks\svd.cpp">
+      <Filter>Source Files\chunks</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="chunks\block.h">
@@ -72,6 +78,12 @@
       <Filter>Header Files\chunks</Filter>
     </ClInclude>
     <ClInclude Include="chunks\density.h">
+      <Filter>Header Files\chunks</Filter>
+    </ClInclude>
+    <ClInclude Include="chunks\qef.h">
+      <Filter>Header Files\chunks</Filter>
+    </ClInclude>
+    <ClInclude Include="chunks\svd.h">
       <Filter>Header Files\chunks</Filter>
     </ClInclude>
   </ItemGroup>
