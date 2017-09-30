@@ -2,10 +2,12 @@
 using namespace glm;
 
 ChunkManager *chunkManager;
+Shaders *shaders;
 
 Renderer::Renderer(GLFWwindow *window) {
 	//Make new chunk manager object
 	chunkManager = new ChunkManager();
+	shaders = new Shaders();
 	_window = window;
 }
 
@@ -18,8 +20,8 @@ void Renderer::render(vec3 position) {
 }
 
 void Renderer::initShaders() {
-	const char *vertSource = Shaders::vertShader();
-	const char *fragSource = Shaders::fragShader();
+	const char *vertSource = shaders->getVert();
+	const char *fragSource = shaders->getFrag();
 
 	//Compile shaders
 	GLuint vertexShader = glCreateShader(GL_VERTEX_SHADER);
