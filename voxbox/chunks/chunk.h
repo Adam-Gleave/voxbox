@@ -16,12 +16,9 @@
 #include "density.h"
 #include "qef.h"
 
-typedef glm::tvec3<GLbyte> byte3;
-typedef glm::tvec4<GLbyte> byte4;
-
 struct Vertex {
-	byte4 coords;
-	byte3 normals;
+	vec4 coords;
+	vec3 normals;
 };
 
 class Chunk {

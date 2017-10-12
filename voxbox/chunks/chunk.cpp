@@ -88,7 +88,7 @@ void Chunk::updateMesh() {
 			for (int z = 0; z < CHUNK_Z; ++z) {
 				//Maximum number of intersections to be a surface
 				const int MAX_CROSSINGS = 6;
-				
+
 				//The vectore offset of each vertex from the x, y, z corner
 				const ivec3 VERTEX_OFFSETS[8]{
 					ivec3(0, 0, 0),	//"Origin" of voxel
@@ -147,6 +147,9 @@ void Chunk::updateMesh() {
 						continue;
 					}
 
+					_blocks[x][y][z]->drawInfo.corners.set(corner1, (material1 < 0));
+					_blocks[x][y][z]->drawInfo.corners.set(corner2, (material2 < 0));
+
 					//Work out position of each corner in world as a vector
 					const vec3 position1 = globalOffset + (vec3)VERTEX_OFFSETS[corner1];
 					const vec3 position2 = globalOffset + (vec3)VERTEX_OFFSETS[corner2];
@@ -179,159 +182,28 @@ void Chunk::updateMesh() {
 					}
 
 					_blocks[x][y][z]->drawInfo.normals = normalize(averageNormal / (float)edgeCount);
-				}
+					_blocks[x][y][z]->drawInfo.index = vertCount;
 
-
-
-
-
-				GLbyte type = _blocks[x][y][z]->getType();
-
-				//Don't add vertices of empty (default) blocks
-				if (type == 0) {
-					continue;
-				}
-
-				//Cull faces that are occluded by other blocks
-				if (z == 0 || _blocks[x][y][z - 1]->getType() == 0) {
-					byte3 normals = byte3(0, 0, -1);
-
-					//Add vertex coordinates to vertex buffer
-					_verts[vertCount].coords = byte4(x + 1, y + 1, z, type);		
-					//Add surface normals and block type to vertex buffer
-					_verts[vertCount++].normals = normals;
-
-					//Repeat for each vertex
-					_verts[vertCount].coords = byte4(x + 1, y, z, type);
-					_verts[vertCount++].normals = normals;
-
-					_verts[vertCount].coords = byte4(x, y, z, type);
-					_verts[vertCount++].normals = normals;
-
-					_verts[vertCount].coords = byte4(x, y, z, type);				
-					_verts[vertCount++].normals = normals;
-
-					_verts[vertCount].coords = byte4(x, y + 1, z, type);			
-					_verts[vertCount++].normals = normals;
-
-					_verts[vertCount].coords = byte4(x + 1, y + 1, z, type);		
-					_verts[vertCount++].normals = normals;
-				}
-
-				if (z == CHUNK_Z - 1 || _blocks[x][y][z + 1]->getType() == 0) {
-					byte3 normals = byte3(0, 0, 1);
-
-					_verts[vertCount].coords = byte4(x, y, z + 1, type);			
-					_verts[vertCount++].normals = normals;
-
-					_verts[vertCount].coords = byte4(x + 1, y, z + 1, type);		
-					_verts[vertCount++].normals = normals;
-
-					_verts[vertCount].coords = byte4(x + 1, y + 1, z + 1, type);	
-					_verts[vertCount++].normals = normals;
-
-					_verts[vertCount].coords = byte4(x + 1, y + 1, z + 1, type);	
-					_verts[vertCount++].normals = normals;
-
-					_verts[vertCount].coords = byte4(x, y + 1, z + 1, type);		
-					_verts[vertCount++].normals = normals;
-
-					_verts[vertCount].coords = byte4(x, y, z + 1, type);			
-					_verts[vertCount++].normals = normals;
-				}
-
-				if (x == 0 || _blocks[x - 1][y][z]->getType() == 0) {
-					byte3 normals = byte3(-1, 0, 0);
-
-					_verts[vertCount].coords = byte4(x, y + 1, z + 1, type);		
-					_verts[vertCount++].normals = normals;
-
-					_verts[vertCount].coords = byte4(x, y + 1, z, type);			
-					_verts[vertCount++].normals = normals;
-
-					_verts[vertCount].coords = byte4(x, y, z, type);				
-					_verts[vertCount++].normals = normals;
-
-					_verts[vertCount].coords = byte4(x, y, z, type);				
-					_verts[vertCount++].normals = normals;
-
-					_verts[vertCount].coords = byte4(x, y, z + 1, type);
-					_verts[vertCount++].normals = normals;
-
-					_verts[vertCount].coords = byte4(x, y + 1, z + 1, type);
-					_verts[vertCount++].normals = normals;
-				}
-
-				if (x == CHUNK_X - 1 || _blocks[x + 1][y][z]->getType() == 0) {
-					byte3 normals = byte3(1, 0, 0);
-
-					_verts[vertCount].coords = byte4(x + 1, y, z, type);
-					_verts[vertCount++].normals = normals;
-
-					_verts[vertCount].coords = byte4(x + 1, y + 1, z, type);
-					_verts[vertCount++].normals = normals;
-
-					_verts[vertCount].coords = byte4(x + 1, y + 1, z + 1, type);	
-					_verts[vertCount++].normals = normals;
-
-					_verts[vertCount].coords = byte4(x + 1, y + 1, z + 1, type);
-					_verts[vertCount++].normals = normals;
-
-					_verts[vertCount].coords = byte4(x + 1, y, z + 1, type);
-					_verts[vertCount++].normals = normals;
-
-					_verts[vertCount].coords = byte4(x + 1, y, z, type);
-					_verts[vertCount++].normals = normals;
-				}
-
-				if (y == 0 || _blocks[x][y - 1][z]->getType() == 0) {
-					byte3 normals = byte3(0, -1, 0);
-
-					_verts[vertCount].coords = byte4(x, y, z, type);
-					_verts[vertCount++].normals = normals;
-
-					_verts[vertCount].coords = byte4(x + 1, y, z, type);
-					_verts[vertCount++].normals = normals;
-
-					_verts[vertCount].coords = byte4(x + 1, y, z + 1, type);
-					_verts[vertCount++].normals = normals;
-
-					_verts[vertCount].coords = byte4(x + 1, y, z + 1, type);
-					_verts[vertCount++].normals = normals;
-
-					_verts[vertCount].coords = byte4(x, y, z + 1, type);
-					_verts[vertCount++].normals = normals;
-
-					_verts[vertCount].coords = byte4(x, y, z, type);
-					_verts[vertCount++].normals = normals;
-				}
-
-				if (y == CHUNK_Y - 1 || _blocks[x][y + 1][z]->getType() == 0) {
-					byte3 normals = byte3(0, 1, 0);
-
-					_verts[vertCount].coords = byte4(x + 1, y + 1, z + 1, type);
-					_verts[vertCount++].normals = normals;
-
-					_verts[vertCount].coords = byte4(x + 1, y + 1, z, type);
-					_verts[vertCount++].normals = normals;
-
-					_verts[vertCount].coords = byte4(x, y + 1, z, type);
-					_verts[vertCount++].normals = normals;
-
-					_verts[vertCount].coords = byte4(x, y + 1, z, type);
-					_verts[vertCount++].normals = normals;
-
-					_verts[vertCount].coords = byte4(x, y + 1, z + 1, type);
-					_verts[vertCount++].normals = normals;
-
-					_verts[vertCount].coords = byte4(x + 1, y + 1, z + 1, type);
-					_verts[vertCount++].normals = normals;
+					vec3 position = _blocks[x][y][z]->drawInfo.position;
+					_verts[vertCount].coords = vec4(position.x, position.y, position.z, _blocks[x][y][z]->getType());
+					_verts[vertCount++].normals = _blocks[x][y][z]->drawInfo.normals;
 				}
 			}
 		}
+		_elements = vertCount;
 	}
 
-	_elements = vertCount;
+	for (int x = 0; x < CHUNK_X; ++x) {
+		for (int y = 0; y < CHUNK_Y; ++y) {
+			for (int z = 0; z < CHUNK_Z; ++z) {
+				if (_blocks[x][y][z]->drawInfo.index < 0) {
+					continue;
+				}
+
+
+			}
+		}
+	}
 }
 
 void Chunk::updateBuffers(Renderer *renderer) {
@@ -345,9 +217,9 @@ void Chunk::updateBuffers(Renderer *renderer) {
 
 	GLint positionAttrib = glGetAttribLocation(renderer->_shaderProgram, "coord");
 	glEnableVertexAttribArray(positionAttrib);
-	glVertexAttribPointer(positionAttrib, 4, GL_BYTE, GL_FALSE, 7, 0);
+	glVertexAttribPointer(positionAttrib, 4, GL_FLOAT, GL_FALSE, 7 * sizeof(float), 0);
 
 	GLint normalAttrib = glGetAttribLocation(renderer->_shaderProgram, "normal");
 	glEnableVertexAttribArray(normalAttrib);
-	glVertexAttribPointer(normalAttrib, 3, GL_BYTE, GL_FALSE, 7, (void*)4);
+	glVertexAttribPointer(normalAttrib, 3, GL_FLOAT, GL_FALSE, 7 * sizeof(float), (void*)(4 * sizeof(float)));
 }
